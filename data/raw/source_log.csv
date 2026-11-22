@@ -1,0 +1,6 @@
+file,firm,source,url_or_reference,retrieved_on,period_covered,units,notes,verified_by,verified_on
+nmc_raw.csv,NMC Health,[verify: original source of the annual figures],,,FY2013-FY2018 (Dec),US$ '000,"annual; FY2019 accounts not in data",,
+nmc_ratios.csv,NMC Health,derived from nmc_raw.csv,,,FY2013-FY2018,ratios,"Altman column is original Z'' (no 3.25 constant)",,
+jyoti_screener.csv,Jyoti Structures,Screener.in (consolidated),[verify: page URL],,FY2014-FY2026 (Mar); FY2013 cash flow only,INR crore,"FY2017 not published on Screener; FY2013 CF from secondary source [verify]",,
+EVENT nmc,NMC Health,"administration, ADGM courts, 2020-04-09",[verify: LSE RNS / ADGM order],,,,,,
+EVENT jyoti,Jyoti Structures,"NCLT Mumbai admits CIRP, 2017-07-04",[verify: NCLT order / IBBI],,,,,,

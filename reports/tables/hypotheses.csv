@@ -1,0 +1,7 @@
+id,verdict,evidence,source
+H1,INCONCLUSIVE,Layer 3 not run for Jyoti: only 0 usable ocf_to_current_liabilities value(s) in the training window (FY<= 2013); need >= 12. Requires higher-frequency pre-FY14 data (BSE quarterly FY2010-13),real_layer3_status.csv
+H2,SUPPORTED,cash flag (OCF < 0) silent FY2013-FY2018; structural flags tripped: liquidity cover < 1 first FY2015. Never tripped: EBITDA / interest < 1.5; Z''-EM < 4.35,real_h2_nmc_flags.csv
+H3,SUPPORTED,"matched 10% FA, n=28, multivariate minus Kalman detection: S1 -30.4 pts, S2 +73.0 pts, S4 +20.4 pts",sim_matched_fa.csv
+H4,SUPPORTED,"n=28, Kalman+CUSUM, block-bootstrap calibrator: nominal 5%: empirical 28.6% [24.6%, 32.4%]; nominal 10%: empirical 34.2% [30.0%, 38.4%]",sim_calibration_curve.csv
+H5,SUPPORTED,"n=28, nominal 10%, held-out firms: block_bootstrap: 34.2% [30.2%, 38.2%]; inflation_factor: 8.4% [6.0%, 10.8%]; conformal: 7.2% [5.0%, 9.6%]; parametric_bootstrap: 8.4% [6.2%, 10.8%]. Pre-registered fixes within +/-3 points: inflation_factor, conformal; the parametric bootstrap (added, not pre-registered) is also within",sim_fixes.csv
+H6,INCONCLUSIVE,"cohort of 6 failed firms collected (Other 3, Visible 3), but the masking index needs Layers 3-4, which run only with >= 12 usable periods; the most any failed firm has is 7 usable annual training values before its monitored window. Rule-level exploratory analogue in cohort_archetype_flag_order.csv",cohort_archetypes.csv

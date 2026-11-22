@@ -1,0 +1,160 @@
+C:\Users\User\downloads\fods\src\simulate\analysis.py:162: RuntimeWarning: divide by zero encountered in divide
+  MI = Ss / hs[:, None] - Sc / hc[:, None]
+C:\Users\User\downloads\fods\src\simulate\analysis.py:162: RuntimeWarning: invalid value encountered in divide
+  MI = Ss / hs[:, None] - Sc / hc[:, None]
+C:\Users\User\downloads\fods\src\simulate\report.py:114: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  bp = ax[0].boxplot([peak[s].dropna() for s in order], labels=order, showfliers=False, patch_artist=True)
+   id    verdict                                                                                                                                                                                                                                 evidence                     source
+0  H4  SUPPORTED                                                                                                  n=28, Kalman+CUSUM, block-bootstrap calibrator: nominal 5%: empirical 28.6% [24.6%, 32.4%]; nominal 10%: empirical 34.2% [30.0%, 38.4%]  sim_calibration_curve.csv
+1  H5  SUPPORTED  n=28, nominal 10%, held-out firms: block_bootstrap: 34.2% [30.2%, 38.2%]; inflation_factor: 8.4% [6.0%, 10.8%]; conformal: 7.2% [5.0%, 9.6%]; parametric_bootstrap: 8.4% [6.2%, 10.8%]. Within +/-3 points: inflation_factor, conformal              sim_fixes.csv
+2  H3  SUPPORTED                                                                                                                                      matched 10% FA, n=28, multivariate minus Kalman detection: S1 -30.4 pts, S2 +73.0 pts, S4 +20.4 pts         sim_matched_fa.csv
+saved simulation figures
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: divide by zero encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\masking\index.py:15: RuntimeWarning: invalid value encountered in divide
+  return np.asarray(s_struct, float) / h_struct - np.asarray(s_cash, float) / h_cash
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\downloads\fods\src\detectors\monitor.py:68: RuntimeWarning: All-NaN axis encountered
+  "peak_masking_index": float(np.nanmax(out.masking_index)) if len(out) else np.nan,
+C:\Users\User\miniconda3\Lib\site-packages\numpy\_core\_methods.py:188: RuntimeWarning: invalid value encountered in subtract
+  x = um.subtract(arr, arrmean, out=...)
+                                                  step  count
+                                 failed firms in panel    150
+                                      controls matched     87
+                             control: identity failure      3
+control: last filing more than 4 quarters before event      2
+                                control: model failure      1
+                                           control: ok     60
+          control: too little training data (0 usable)      2
+          control: too little training data (1 usable)      1
+         control: too little training data (10 usable)      5
+         control: too little training data (11 usable)      5
+          control: too little training data (5 usable)      1
+          control: too little training data (6 usable)      1
+          control: too little training data (7 usable)      1
+          control: too little training data (8 usable)      3
+          control: too little training data (9 usable)      2
+                              failed: identity failure      6
+ failed: last filing more than 4 quarters before event      2
+                                 failed: model failure      5
+                                            failed: ok     91
+          failed: too little training data (10 usable)      5
+          failed: too little training data (11 usable)     11
+           failed: too little training data (3 usable)      1
+           failed: too little training data (4 usable)      1
+           failed: too little training data (6 usable)      3
+           failed: too little training data (7 usable)      3
+           failed: too little training data (8 usable)      7
+           failed: too little training data (9 usable)     15
+                method  failed_firms  controls  detection  det_ci_lo  det_ci_hi  false_alarm  fa_ci_lo  fa_ci_hi  median_lead_quarters  share_lead_ge_8q  expected_cost_cm5  expected_cost_cm10  expected_cost_cm20  beats_altman_cm5  beats_altman_cm10  beats_altman_cm20
+   amber (uncorrected)            91        46      0.648      0.549      0.747        0.543     0.391     0.674                   9.0             0.627              2.302               4.060               7.576             False              False              False
+     red (uncorrected)            91        46      0.396      0.297      0.495        0.217     0.109     0.348                   4.5             0.389              3.239               6.261              12.305             False              False              False
+   amber (n-corrected)            91        46      0.451      0.352      0.560        0.370     0.239     0.522                   8.0             0.512              3.117               5.864              11.359             False              False              False
+     red (n-corrected)            91        46      0.165      0.088      0.242        0.087     0.022     0.174                   6.0             0.333              4.263               8.439              16.790             False              False              False
+Altman Z''-EM distress            91        46      0.912      0.846      0.967        0.522     0.391     0.652                  15.0             0.747              0.961               1.401               2.280             False              False              False
+      any Layer 2 rule            91        46      0.923      0.868      0.967        0.457     0.326     0.587                  13.0             0.726              0.841               1.226               1.995              True               True               True
+arch_archetype  firms  mean_peak_mi  median_peak_mi
+        Masked     13    176.897422        1.106107
+         Other     49           NaN        0.588835
+       Visible     29           inf        0.469035
+saved EDGAR figures
+NMC Health: event FY2020 (2020-04-09)
+                                 first_trip_fy  first_trip_tau  lead_fy lead_years  pre_event_years_evaluable  pre_event_years_tripped
+rule                                                                                                                                  
+OCF < 0                                   <NA>            <NA>     <NA>       None                          6                        0
+EBITDA / interest < 1.2                   <NA>            <NA>     <NA>       None                          6                        0
+Debtor days > 270                         <NA>            <NA>     <NA>       None                          6                        0
+Altman Z''-EM < 4.35 (distress)           <NA>            <NA>     <NA>       None                          6                        0
+Any rule                                  <NA>            <NA>     <NA>       None                          6                        0
+
+Jyoti Structures: event FY2018 (2017-07-04)
+                                 first_trip_fy  first_trip_tau  lead_fy  lead_years  pre_event_years_evaluable  pre_event_years_tripped
+rule                                                                                                                                   
+OCF < 0                                   2014              -4        4        3.26                          5                        3
+EBITDA / interest < 1.2                   2014              -4        4        3.26                          4                        4
+Debtor days > 270                         2014              -4        4        3.26                          4                        4
+Altman Z''-EM < 4.35 (distress)           2018               0        0       -0.74                          4                        1
+Any rule                                  2014              -4        4        3.26                          5                        4
+
+ firm  event_fy archetype  max_consecutive_negative_ocf_years  ocf_positive_all_pre_event_years structural_flags_tripped  n_structural_flags_tripped structural_flags_not_evaluable pre_event_years
+  nmc      2020     Other                                   0                              True      liquidity cover < 1                           1                           none       2013-2018
+jyoti      2018   Visible                                   3                             False  EBITDA / interest < 1.5                           1            liquidity cover < 1       2013-2017
+
+id      verdict                                                                                                                                                                                                                                evidence                    source
+H1 INCONCLUSIVE                                          Layer 3 not run for Jyoti: only 0 usable ocf_to_current_liabilities value(s) in the training window (FY<= 2013); need >= 12. Requires higher-frequency pre-FY14 data (BSE quarterly FY2010-13)    real_layer3_status.csv
+H2    SUPPORTED                                                                             cash flag (OCF < 0) silent FY2013-FY2018; structural flags tripped: liquidity cover < 1 first FY2015. Never tripped: EBITDA / interest < 1.5; Z''-EM < 4.35     real_h2_nmc_flags.csv
+H3    SUPPORTED                                                                                                                                     matched 10% FA, n=28, multivariate minus Kalman detection: S1 -30.4 pts, S2 +73.0 pts, S4 +20.4 pts        sim_matched_fa.csv
+H4    SUPPORTED                                                                                                 n=28, Kalman+CUSUM, block-bootstrap calibrator: nominal 5%: empirical 28.6% [24.6%, 32.4%]; nominal 10%: empirical 34.2% [30.0%, 38.4%] sim_calibration_curve.csv
+H5    SUPPORTED n=28, nominal 10%, held-out firms: block_bootstrap: 34.2% [30.2%, 38.2%]; inflation_factor: 8.4% [6.0%, 10.8%]; conformal: 7.2% [5.0%, 9.6%]; parametric_bootstrap: 8.4% [6.2%, 10.8%]. Within +/-3 points: inflation_factor, conformal             sim_fixes.csv
+H6 INCONCLUSIVE                                                                                                                                                                                  no cohort data: data/raw/cohort/cohort.csv not present     cohort_archetypes.csv

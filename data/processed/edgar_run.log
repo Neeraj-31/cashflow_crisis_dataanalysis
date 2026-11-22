@@ -1,0 +1,40 @@
+                                                  step  count
+                                 failed firms in panel    150
+                                      controls matched     87
+                             control: identity failure      3
+control: last filing more than 4 quarters before event      2
+                                control: model failure      1
+                                           control: ok     60
+          control: too little training data (0 usable)      2
+          control: too little training data (1 usable)      1
+         control: too little training data (10 usable)      5
+         control: too little training data (11 usable)      5
+          control: too little training data (5 usable)      1
+          control: too little training data (6 usable)      1
+          control: too little training data (7 usable)      1
+          control: too little training data (8 usable)      3
+          control: too little training data (9 usable)      2
+                              failed: identity failure      6
+ failed: last filing more than 4 quarters before event      2
+                                 failed: model failure      5
+                                            failed: ok     91
+          failed: too little training data (10 usable)      5
+          failed: too little training data (11 usable)     11
+           failed: too little training data (3 usable)      1
+           failed: too little training data (4 usable)      1
+           failed: too little training data (6 usable)      3
+           failed: too little training data (7 usable)      3
+           failed: too little training data (8 usable)      7
+           failed: too little training data (9 usable)     15
+                method  failed_firms  controls  detection  det_ci_lo  det_ci_hi  false_alarm  fa_ci_lo  fa_ci_hi  median_lead_quarters  share_lead_ge_8q  expected_cost_cm5  expected_cost_cm10  expected_cost_cm20  beats_altman_cm5  beats_altman_cm10  beats_altman_cm20
+   amber (uncorrected)            91        46      0.626      0.527      0.725        0.543     0.391     0.674                  10.0             0.632              2.412               4.280               8.016             False              False              False
+     red (uncorrected)            91        46      0.396      0.297      0.495        0.217     0.109     0.348                   4.5             0.389              3.239               6.261              12.305             False              False              False
+   amber (n-corrected)            91        46      0.429      0.330      0.527        0.348     0.217     0.478                   8.0             0.513              3.205               6.062              11.776             False              False              False
+     red (n-corrected)            91        46      0.165      0.088      0.242        0.087     0.022     0.174                   6.0             0.333              4.263               8.439              16.790             False              False              False
+Altman Z''-EM distress            91        46      0.912      0.846      0.967        0.522     0.391     0.652                  15.0             0.747              0.961               1.401               2.280             False              False              False
+      any Layer 2 rule            91        46      0.923      0.868      0.967        0.457     0.326     0.587                  13.0             0.726              0.841               1.226               1.995              True               True               True
+arch_archetype  firms  mean_peak_mi  median_peak_mi
+        Masked     13    176.897422        1.106107
+         Other     49      3.154253        0.549121
+       Visible     29      2.406545        0.422346
+saved EDGAR figures

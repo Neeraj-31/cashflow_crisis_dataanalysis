@@ -1,0 +1,57 @@
+area,check,status,detail
+provenance,snapshot of configs/config.yaml matches the recorded pre-registration hash,PASS,e12bba1b5624b261
+provenance,snapshot of docs/PREREGISTRATION.md matches the recorded pre-registration hash,PASS,b9452b3c0e35f247
+provenance,pre-registered config blocks unchanged since the fingerprint,PASS,"unchanged: seed, cohort, archetype, altman_z2_em, layer2, detectors, simulation, masking, firms, ratios, identities, cost, negative_controls"
+provenance,config blocks added after the fingerprint (must be logged as deviations),INFO,"cohort_ingest, sanity, edgar"
+provenance,robustness keys added after the fingerprint,INFO,"cusum_k_grid, h_multiplier_grid, edgar_event_shift_quarters, case_event_shift_fy, alt_event_dates, nmc_hidden_debt_multiples, nmc_revealed_debt_usd_bn"
+provenance,global seed is 20261121,PASS,20261121
+provenance,no unseeded or salted random number generators in src/,PASS,none found
+data,nmc: accounting identities hold,PASS,6 firm-years
+data,nmc: total assets in a plausible unit range,PASS,"min 815,262, max 3,872,415 (band 100,000-100,000,000)"
+data,nmc: total assets grow every year (as reported 2013-2018),PASS,consistent with the debt-funded expansion story
+data,jyoti: accounting identities hold,PASS,14 firm-years
+data,jyoti: total assets in a plausible unit range,PASS,"min 1,417, max 6,381 (band 100-100,000)"
+data,EDGAR: each failed firm appears once,PASS,150 failed firms
+data,EDGAR: no control is also a failed firm in the panel,PASS,87 controls
+data,EDGAR: no control has any Item 1.03 (bankruptcy) 8-K in 2012-2023,PASS,none
+data,EDGAR: control re-use across failed firms,PASS,each control used once
+data,EDGAR: financials (SIC 6000-6799) excluded,PASS,0 financial firms in panel
+data,EDGAR: share of firm-quarters with |ratio| > 100,INFO,ocf_to_current_liabilities 0.0%; liquid_to_st_debt 0.3%; ebitda_interest_cover 1.8%; altman_z2_em 4.5%; neg_dso 4.9%; neg_sloan_accruals 0.3% (largest: neg_dso)
+look-ahead,EDGAR: every alarm lies inside the 16 monitored quarters ending at the event,PASS,0 alarms outside
+look-ahead,"EDGAR: training ends before monitoring (n_train >= 12 usable, monitor = 16 quarters)",PASS,min usable training quarters among analysed firms: 12
+look-ahead,EDGAR: each control is monitored over its failed firm's window,PASS,87/87 controls
+look-ahead,simulation: correction-fitting firms and held-out firms use different seed streams,PASS,offsets 0 vs 1000
+orientation,"EDGAR, last 4 quarters: failed-firm median below control median on the 4 distress ratios (lower = worse)",PASS,4/4: ocf_to_current_liabilities -0.01 vs 0.50; liquid_to_st_debt 0.30 vs 1.89; ebitda_interest_cover -1.45 vs 5.11; altman_z2_em -1.27 vs 5.01
+orientation,"EDGAR, last 4 quarters: debtor days and accruals (not distress ratios)",WARN,"neg_dso failed -37.15 vs control -45.59; neg_sloan_accruals failed 0.19 vs control 0.08. Failed firms do NOT look worse here: debtor days depend on industry mix, and big write-downs before bankruptcy push net income far below OCF, so measured accruals turn negative (negated: high). These two ratios measure earnings quality in normal times, not distress at the brink."
+orientation,EDGAR failed firms: distress-ratio medians fall from 3+ years out to the last 4 quarters,PASS,"4/4 fall: ocf_to_current_liabilities 0.33 -> -0.01, liquid_to_st_debt 6.92 -> 0.13, ebitda_interest_cover 1.40 -> -1.33, altman_z2_em 3.45 -> -1.73"
+data,EDGAR: share of monitored firm-quarters where each ratio is available,WARN,"ocf_to_current_liabilities 92%; liquid_to_st_debt 4%; ebitda_interest_cover 47%; altman_z2_em 80%; neg_dso 68%; neg_sloan_accruals 92%. Short-term debt is rarely tagged in quarterly XBRL, so liquidity cover is sparse and the structural detector usually runs without it."
+simulation,machinery check: thresholds learned from the right distribution (conformal) hit nominal at n=28,PASS,"nominal 5% -> 4.6%; nominal 10% -> 7.2% (if this failed, the CUSUM/max-statistic code itself would be suspect)"
+simulation,"kalman_cusum, nominal 5%: uncorrected false alarms shrink as training grows",PASS,"Spearman rho -1.00; n=12: 51.0%, n=16: 36.4%, n=20: 35.2%, n=28: 28.6%, n=40: 22.6%"
+simulation,"kalman_cusum, nominal 10%: uncorrected false alarms shrink as training grows",PASS,"Spearman rho -0.90; n=12: 54.0%, n=16: 39.4%, n=20: 39.8%, n=28: 34.2%, n=40: 27.4%"
+simulation,"mcusum, nominal 5%: uncorrected false alarms shrink as training grows",PASS,"Spearman rho -1.00; n=12: 41.0%, n=16: 27.8%, n=20: 27.4%, n=28: 20.0%, n=40: 17.8%"
+simulation,"mcusum, nominal 10%: uncorrected false alarms shrink as training grows",PASS,"Spearman rho -1.00; n=12: 45.6%, n=16: 33.4%, n=20: 33.2%, n=28: 26.8%, n=40: 24.6%"
+simulation,power rises with drift size (allowing 3-point noise),PASS,all monotone
+simulation,no simulated firm run crashed,PASS,0 failed runs
+simulation,"degenerate (h <= 0) thresholds are excluded and counted, not silently used",INFO,264 firm-cells across all n and alphas
+simulation,"coincidence check: two equal numbers in sim_fixes (n=28, 5%) come from different firms",PASS,both 143/500; vectors agree on 81% of firms
+cohort,PROPOSAL.md is unchanged since its last recorded fingerprint (frame and rule fixed before data),PASS,3 fingerprints recorded; current 586cb53371ca7dca
+cohort,failed-firm events fall in 2015-2023,PASS,"2017, 2017, 2017, 2017, 2018, 2018"
+cohort,every failed firm has >= 8 pre-event annual periods,PASS,"amtek 10, bhushan 8, abg 10, lanco 12, era 11, videocon 13"
+cohort,accounting identities hold for every cohort firm (checked by run_real before analysis),PASS,12 of 12 firms analysed
+cohort,each control is aligned at its failed firm's event date,PASS,
+cohort,no control is itself a cohort failed firm,PASS,
+cohort,chosen controls lie inside the 0.5-2x total-assets band,PASS,"amtek 1.22x, bhushan 1.46x, abg 1.57x, lanco 0.84x, era 0.92x"
+cohort,"non-12-month fiscal periods are scaled and flagged, not silently mixed",INFO,"amtek: 2, videocon: 4"
+EDGAR,amber (uncorrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+8.3 points [-9.1, +25.7]; detection 62.6%, false alarms 54.3%"
+EDGAR,red (uncorrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+17.8 points [+1.5, +33.1]; detection 39.6%, false alarms 21.7%"
+EDGAR,amber (n-corrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+8.1 points [-9.4, +24.5]; detection 42.9%, false alarms 34.8%"
+EDGAR,red (n-corrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+7.8 points [-4.2, +18.7]; detection 16.5%, false alarms 8.7%"
+EDGAR,Altman Z''-EM distress: alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+39.0 points [+23.8, +54.3]; detection 91.2%, false alarms 52.2%"
+EDGAR,any Layer 2 rule: alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+46.7 points [+31.4, +61.9]; detection 92.3%, false alarms 45.7%"
+EDGAR,real-data echo of H4: uncorrected amber false-alarm rate on healthy controls far above 10% nominal,PASS,"54.3% [39.1%, 67.4%]"
+reproducibility,EDGAR rerun (robustness base variant) gives identical per-firm results,PASS,237/237 firm runs identical
+reproducibility,simulation tables regenerate byte-identically from the stored runs,PASS,12 tables; different: none
+reproducibility,Layer 1/2 tables regenerate byte-identically,PASS,7 tables compared; different: none
+report,report.md: numbers traceable to a table or the config,PASS,"639 numbers, 100.0% traced; untraced: none"
+report,explainer.html: numbers traceable to a table or the config,PASS,"579 numbers, 100.0% traced; untraced: none"
+tests,"full test suite (incl. legacy reproduction: CSV-equal, pixel-identical figures)",PASS,52 passed

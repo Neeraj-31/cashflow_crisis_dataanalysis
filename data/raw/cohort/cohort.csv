@@ -1,0 +1,13 @@
+firm_id,name,role,matched_to,event_date,fy_end_month,country,sector,size_band,source,screener_path
+amtek,Amtek Auto,failed,,2017-07-24,3,India,Auto Components,reference,"Screener.in public page (consolidated), cached in data/raw/cohort/html",/company/AMTEKAUTO/consolidated/
+amtek_ctrl,Samvardh. Mothe.,control,amtek,2017-07-24,3,India,Auto Components,1.22x failed firm's FY2017 total assets,"Screener.in public page, cached in data/raw/cohort/html",/company/MOTHERSON/consolidated/
+bhushan,Bhushan Steel (Tata Steel BSL),failed,,2017-07-26,3,India,Iron & Steel,reference,"Screener.in public page (consolidated), cached in data/raw/cohort/html",/company/TATASTLBSL/consolidated/
+bhushan_ctrl,JSW Steel,control,bhushan,2017-07-26,3,India,Iron & Steel,1.46x failed firm's FY2017 total assets,"Screener.in public page, cached in data/raw/cohort/html",/company/JSWSTEEL/consolidated/
+abg,ABG Shipyard,failed,,2017-08-01,3,India,Commercial Vehicles (Screener),reference,"Screener.in public page (consolidated), cached in data/raw/cohort/html",/company/ABGSHIP/consolidated/
+abg_ctrl,Ashok Leyland,control,abg,2017-08-01,3,India,Commercial Vehicles (Screener),1.57x failed firm's FY2015 total assets,"Screener.in public page, cached in data/raw/cohort/html",/company/ASHOKLEY/consolidated/
+lanco,Lanco Infratech,failed,,2017-08-07,3,India,Civil Construction (judgement),reference,"Screener.in public page (consolidated), cached in data/raw/cohort/html",/company/LITL/consolidated/
+lanco_ctrl,IRB Infra.Devl.,control,lanco,2017-08-07,3,India,Civil Construction (judgement),0.84x failed firm's FY2017 total assets,"Screener.in public page, cached in data/raw/cohort/html",/company/IRB/consolidated/
+era,Era Infra Engineering,failed,,2018-05-08,3,India,Civil Construction,reference,"Screener.in public page (consolidated), cached in data/raw/cohort/html",/company/ERAINFRA/consolidated/
+era_ctrl,NCC,control,era,2018-05-08,3,India,Civil Construction,0.92x failed firm's FY2017 total assets,"Screener.in public page, cached in data/raw/cohort/html",/company/NCC/consolidated/
+videocon,Videocon Industries,failed,,2018-06-06,3,India,Consumer Electronics,reference,"Screener.in public page (consolidated), cached in data/raw/cohort/html",/company/VIDEOIND/consolidated/
+jet,Jet Airways,negative_control,,2019-06-20,3,India,Airline,,Screener.in public page (consolidated),/company/JETAIRWAYS/consolidated/

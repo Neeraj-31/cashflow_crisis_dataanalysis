@@ -1,0 +1,214 @@
+# Date: 2026-11-21
+# Single source of truth for the seed, paths and every threshold used anywhere in src/.
+# Do not hard-code thresholds in code; read them via src.config.load_config().
+# Pre-registered values (cohort, archetype, altman_z2_em, layer2, detectors) are frozen as of the date
+# above and mirrored in docs/PREREGISTRATION.md. Any change goes in that file's deviations log.
+
+prereg_date: "2026-11-21"
+seed: 20261121
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  tables: reports/tables
+  figures: reports/figures
+
+# ---------------------------------------------------------------- pre-registered: cohort
+cohort:
+  markets: [India, GCC]
+  listed: true
+  exclude_sectors: [financials]          # banks, NBFCs, insurers, REITs
+  event_types: [formal_insolvency, default, restructuring]
+  event_window: [2015, 2023]             # calendar year of event, inclusive
+  min_pre_event_annual_filings: 8
+  target_failed_firms: [6, 8]            # rescoped from the blueprint's 8-12 (5-day plan)
+  controls:
+    per_failed_firm: 1
+    match_on: [sector, size_band]
+    no_distress_in_window: true          # control must have no distress event in the failed firm's window
+
+# ---------------------------------------------------------------- pre-registered: archetypes
+archetype:
+  visible:
+    ocf_negative_consecutive_years: 2    # OCF < 0 in >= 2 consecutive pre-event years
+  masked:
+    ocf_stays_positive: true
+    min_structural_flags: 2              # >= 2 of the structural flags below trip while OCF > 0
+    structural_flags:
+      liquidity_cover_max: 1.0           # (cash + deposits) / short-term debt < 1
+      interest_cover_max: 1.5            # EBITDA / interest < 1.5
+      altman_z2_em_distress: true        # Altman Z''-EM in distress zone
+  # otherwise: Other
+
+# ---------------------------------------------------------------- pre-registered: Altman Z''
+# Emerging-market variant (Altman 2005, "EM score"):
+#   Z''-EM = 3.25 + 6.56*X1 + 3.26*X2 + 6.72*X3 + 1.05*X4
+#   X1 = working capital / TA, X2 = retained earnings / TA, X3 = EBIT / TA, X4 = book equity / total liabilities
+altman_z2_em:
+  constant: 3.25
+  coef: {wc_ta: 6.56, re_ta: 3.26, ebit_ta: 6.72, bve_tl: 1.05}
+  safe: 5.85                             # Z > 5.85 safe
+  distress: 4.35                         # Z < 4.35 distress; in between = grey
+
+# ---------------------------------------------------------------- ratio construction
+ratios:
+  # a ratio is masked (NaN) when |denominator| <= eps * |total assets| of the same firm-year
+  denominator_eps_rel_assets:
+    activity: 0.01    # revenue / COGS denominators (margins, days): meaningless on near-zero sales
+    default: 0.001    # everything else (interest, debt, liabilities, prior-year levels, ...)
+  # gap years are never filled unless this is changed ("none" | "linear")
+  fill_missing: none
+  anomaly:
+    ocf_to_revenue_max: 1.0              # OCF > 1.0 x revenue in a year => anomaly flag
+
+identities:
+  rel_tol: 0.001                         # tolerance = max(abs_tol, rel_tol * |total assets|)
+  abs_tol: 3                             # in the firm's reporting unit (Jyoti: INR crore rounding)
+  days_tol: 3                            # CCC identity tolerance, days
+
+# ---------------------------------------------------------------- firms / events
+# event_date: date of the formal event; fy_end_month: month the fiscal year ends.
+firms:
+  nmc:
+    name: NMC Health
+    event_date: "2020-04-09"             # placed into administration (ADGM courts) -- VERIFY vs primary source
+    event_type: formal_insolvency
+    fy_end_month: 12
+  jyoti:
+    name: Jyoti Structures
+    event_date: "2017-07-04"             # NCLT Mumbai admits CIRP (IBC) -- VERIFY vs primary source
+    event_type: formal_insolvency
+    fy_end_month: 3
+    training_end_fy: 2013                # blueprint: pre-FY14 healthy baseline (needs BSE FY2010-13 data)
+
+# ---------------------------------------------------------------- Layer 1: event-time study
+layer1:
+  window: [-5, 0]                        # event-time years; 0 = fiscal year containing the event date
+  control_band_quantiles: [0.25, 0.75]   # optional peer/control band
+  ratios:                                # oriented ratios shown (lower = worse)
+    - ocf_to_revenue
+    - ocf_to_total_debt
+    - liquid_to_st_debt
+    - ebitda_interest_cover
+    - neg_dso
+    - neg_ccc
+    - neg_sloan_accruals
+    - altman_z2_em
+    - neg_financing_to_burn
+
+# ---------------------------------------------------------------- pre-registered: Layer 2 rules
+layer2:
+  rules:
+    ocf_max: 0                           # trips if OCF < 0
+    ebitda_interest_cover_min: 1.2       # trips if EBITDA / interest < 1.2 (interest <= 0 => not tripped)
+    debtor_days_max: 270                 # trips if debtor days (DSO) > 270
+    altman_z2_em_distress: true          # trips if Z''-EM < altman_z2_em.distress
+
+# ---------------------------------------------------------------- pre-registered: detectors (Layer 3)
+detectors:
+  cusum:
+    k: 0.5                               # reference value, in training-window SD units
+  nominal_false_alarm_rates: [0.05, 0.10]
+  training:
+    split: pseudo_oos
+    train_fraction: 0.6                  # first 60% of each firm's pre-event years
+  bootstrap:
+    method: circular_block
+    block_length_rule: ceil_cuberoot     # b = max(min_block, ceil(n_train ** (1/3)))
+    min_block: 2
+    n_resamples: 2000
+  # --- from the 5-day plan (Prompt 5) ---
+  cusum_direction: lower               # S_t = max(0, S_{t-1} - z_t - k): accumulates deterioration (lower = worse)
+  univariate_model: local_level_ar1    # statsmodels UnobservedComponents, params frozen after training
+  baselines: [arima_100_cusum, random_walk_cusum, altman_z2_em_zones]
+  multivariate:
+    method: crosier_mcusum
+    covariance: ledoit_wolf             # on training innovations
+    n_ratios: [4, 6]
+  # Blueprint s.7 Layer 5: amber when EITHER detector crosses its lower threshold (the 10% nominal h);
+  # red when the multivariate detector (at the 5% nominal h) AND at least one Layer 2 rule agree.
+  tiers:
+    amber_alpha: 0.10
+    red_alpha: 0.05
+  # Blueprint s.7 Layer 5 calibration: refit on the first 60% of the training window, filter the
+  # remaining 40% to get pseudo-out-of-sample innovations, centre the pool, circular-block-bootstrap
+  # monitoring paths of length `monitor_horizon`, h = (1 - alpha) quantile of max_t S_t.
+  monitor_horizon: 16
+  min_periods_layer3: 12                # Layers 3/4 run only where >= 12 usable periods exist
+
+# ---------------------------------------------------------------- pre-registered: simulation & calibration
+simulation:
+  seed_offset_train: 0                  # rng(offset): firms used to fit corrections
+  seed_offset_heldout: 1000             # rng(offset): held-out firms, never used to fit corrections
+  firms_per_cell: 500                   # minimum
+  training_lengths: [12, 16, 20, 28, 40]
+  scenarios: [S1_target_drift, S2_other_ratios_deteriorate, S3_small_drift_all, S4_concealment]
+  # S5 (heavy tails) and S6 (training-period breaks) are cut per the blueprint's cut order.
+  # S4: reported_t = s * true_t + (1 - s) * reported_{t-1}. Set 2026-11-21 before any simulation run.
+  concealment_smoothing: 0.3
+  n_ratios: 4                           # target ratio + 3 others
+  ar_phi: 0.5                           # AR(1) coefficient of each ratio around its mean
+  innovation_corr: 0.3                  # equicorrelation of ratio innovations
+  monitor_length: 16                    # monitored periods after training (blueprint s.10.1)
+  onset_in_monitor: 4                   # drift starts at this monitored period (0-based)
+  drift_sd_per_period: 0.25             # S1/S2 drift slope per period, in innovation-SD units
+  small_drift_sd_per_period: 0.1        # S3 drift slope (all ratios)
+  power_drift_grid: [0.05, 0.1, 0.15, 0.25, 0.4]
+  calibration_bootstrap_resamples: 2000 # same as detectors.bootstrap.n_resamples
+  ci_resamples: 2000                    # bootstrap CIs on rates
+  fixes: [inflation_factor, parametric_bootstrap, conformal]
+  conformal_quantile: finite_sample     # ceil((m+1)(1-alpha))/m
+  h5_tolerance_points: 3                # H5: corrected FA rate within +/-3 points of nominal at n = 28
+  h5_training_length: 28
+
+# ---------------------------------------------------------------- pre-registered: masking index
+masking:
+  structural_ratios: [liquid_to_st_debt, ebitda_interest_cover, altman_z2_em]
+  cash_ratio: ocf_to_current_liabilities  # blueprint's cash-flow-first ratio (OCF / current liabilities)
+  # blueprint s.9: MI should separate S1 vs S2; 5-day plan: S1 (visible) vs S4 (concealment). Both reported.
+  separation_pairs: [[S1_target_drift, S2_other_ratios_deteriorate], [S1_target_drift, S4_concealment]]
+  fingerprints: [cash_only, structural_first, both_together, neither]
+
+# ---------------------------------------------------------------- pre-registered: cohort extras, robustness, cost
+negative_controls: [Jet Airways, Reliance Communications]   # reported separately as limits of the method
+robustness:
+  training_window_shift: 2              # +/- periods
+  alt_event_definitions: [first_covenant_breach, auditor_emphasis_of_matter, default, restructuring, formal_insolvency]
+cost:
+  c_fa: 1
+  c_miss: [5, 10, 20]
+
+# ---------------------------------------------------------------- legacy EDA (case-study scripts)
+nmc:
+  # x-position of the RNS "Update on financial position" marker (fractional year; verify exact date)
+  event_marker: 2020.2
+  # ratios are z-scored against this baseline window (inclusive end)
+  baseline_end: "2015-12-31"
+  # Altman Z'' (non-EM, no constant) zone lines drawn on the legacy ratio panel only
+  altman_z2:
+    safe: 2.6
+    distress: 1.1
+
+jyoti:
+  # Rule-based early-warning flags of the legacy EDA (illustrative). Labels generated from these values.
+  flags:
+    cfo_max: 0                  # Operating cash flow < cfo_max
+    cash_conversion_min: 0.5    # CFO < min * max(EBITDA, 0)
+    interest_cover_min: 1.2     # EBITDA / interest < min (no interest => not tripped)
+    debtor_days_max: 270
+    ccc_days_max: 180
+    borrowings_growth_max: 0.5
+    sales_fall_max: 0.10        # sales growth < -sales_fall_max
+    net_worth_min: 0
+  # colour bands for the "number of flags tripped" bar (count >= value)
+  flag_count_bands:
+    red: 5
+    orange: 3
+    amber: 1
+  # lifecycle phase shading: [start, end, label, colour]
+  phases:
+    - [2012.5, 2013.5, "", "#f8f9fa"]
+    - [2013.5, 2016.5, "Cash crunch", "#ffe5e7"]
+    - [2016.5, 2017.5, "", "#e9ecef"]
+    - [2017.5, 2021.5, "Insolvency years", "#dee2e6"]
+    - [2021.5, 2026.5, "Post-resolution", "#d8f3dc"]

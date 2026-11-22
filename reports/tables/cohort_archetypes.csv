@@ -1,0 +1,13 @@
+firm_id,name,role,matched_to,event_date,event_fy,archetype,max_consecutive_negative_ocf_years,ocf_positive_all_pre_event_years,structural_flags_tripped,n_structural_flags_tripped,structural_flags_not_evaluable,pre_event_years,pre_event_annual_periods,usable_cash_ratio_periods,usable_training_before_window,layer3_possible,window_fy,first_cash_flag_fy,first_structural_flag_fy,flag_order,first_rule_fy,first_altman_fy,scaled_periods
+amtek,Amtek Auto,failed,,2017-07-24,2018,Other,1,False,EBITDA / interest < 1.5; Z''-EM < 4.35,2,liquidity cover < 1,2008-2017,10,10,5,False,2013-2017,,2015.0,structural only,2017.0,2017.0,2
+amtek_ctrl,Samvardh. Mothe.,control,amtek,2017-07-24,2018,Other,0,True,none,0,liquidity cover < 1,2015-2017,3,3,0,False,2015-2017,,,neither,,,0
+bhushan,Bhushan Steel (Tata Steel BSL),failed,,2017-07-26,2018,Other,1,False,EBITDA / interest < 1.5; Z''-EM < 4.35,2,liquidity cover < 1,2010-2017,8,8,3,False,2013-2017,2013.0,2015.0,cash first,2013.0,2016.0,0
+bhushan_ctrl,JSW Steel,control,bhushan,2017-07-26,2018,Other,0,True,Z''-EM < 4.35,1,liquidity cover < 1,2015-2017,3,3,0,False,2015-2017,,2016.0,structural only,,2016.0,0
+abg,ABG Shipyard,failed,,2017-08-01,2018,Visible,4,False,EBITDA / interest < 1.5,1,liquidity cover < 1,2006-2015,10,9,6,False,2013-2015,2013.0,2014.0,cash first,2013.0,,0
+abg_ctrl,Ashok Leyland,control,abg,2017-08-01,2018,Other,1,False,none,0,liquidity cover < 1,2015-2017,3,3,0,False,2015-2017,2016.0,,cash only,2016.0,,0
+lanco,Lanco Infratech,failed,,2017-08-07,2018,Other,1,False,EBITDA / interest < 1.5; Z''-EM < 4.35,2,liquidity cover < 1,2006-2017,12,12,7,False,2013-2017,2016.0,2013.0,structural first,2013.0,2013.0,0
+lanco_ctrl,IRB Infra.Devl.,control,lanco,2017-08-07,2018,Other,0,True,Z''-EM < 4.35,1,liquidity cover < 1,2015-2017,3,3,0,False,2015-2017,,2015.0,structural only,,2015.0,0
+era,Era Infra Engineering,failed,,2018-05-08,2019,Visible,2,False,EBITDA / interest < 1.5,1,liquidity cover < 1,2008-2018,11,10,6,False,2014-2018,2014.0,2014.0,same year,2014.0,,0
+era_ctrl,NCC,control,era,2018-05-08,2019,Other,0,True,EBITDA / interest < 1.5,1,liquidity cover < 1,2015-2018,4,4,0,False,2015-2018,,2015.0,structural only,,,0
+videocon,Videocon Industries,failed,,2018-06-06,2019,Visible,2,False,EBITDA / interest < 1.5,1,liquidity cover < 1,2006-2018,13,11,7,False,2014-2018,2014.0,2015.0,cash first,2014.0,,4
+jet,Jet Airways,negative_control,,2019-06-20,2020,Other,1,False,EBITDA / interest < 1.5; Z''-EM < 4.35,2,liquidity cover < 1,2008-2018,11,11,7,False,2015-2018,,2015.0,structural only,2015.0,2015.0,0

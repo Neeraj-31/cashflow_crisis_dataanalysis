@@ -1,0 +1,4 @@
+id,verdict,evidence,source
+H4,SUPPORTED,"n=28, Kalman+CUSUM, block-bootstrap calibrator: nominal 5%: empirical 28.6% [24.6%, 32.4%]; nominal 10%: empirical 34.2% [30.0%, 38.4%]",sim_calibration_curve.csv
+H5,SUPPORTED,"n=28, nominal 10%, held-out firms: block_bootstrap: 34.2% [30.2%, 38.2%]; inflation_factor: 8.4% [6.0%, 10.8%]; conformal: 7.2% [5.0%, 9.6%]; parametric_bootstrap: 8.4% [6.2%, 10.8%]. Pre-registered fixes within +/-3 points: inflation_factor, conformal; the parametric bootstrap (added, not pre-registered) is also within",sim_fixes.csv
+H3,SUPPORTED,"matched 10% FA, n=28, multivariate minus Kalman detection: S1 -30.4 pts, S2 +73.0 pts, S4 +20.4 pts",sim_matched_fa.csv

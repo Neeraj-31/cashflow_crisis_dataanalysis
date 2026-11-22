@@ -1,0 +1,16 @@
+ hidden_debt_multiple archetype  n_structural_flags  first FY: liquidity cover < 1  first FY: EBITDA / interest < 1.5  first FY: Z''-EM < 4.35  liquidity_cover_2018  interest_cover_2018  z2_em_2018
+                  0.0     Other                   1                           2015                                NaN                      NaN              0.894900             4.017873    5.733281
+                  0.5    Masked                   2                           2013                                NaN                   2015.0              0.317871             2.678582    2.748093
+                  1.0    Masked                   2                           2013                                NaN                   2013.0              0.193259             2.008936   -0.034418
+                  2.0    Masked                   3                           2013                             2018.0                   2013.0              0.108326             1.339291   -5.364156
+2133 firm runs on 9 workers
+                   variant  failed_firms  controls  detection  false_alarm
+                      base            91        46      0.626        0.543
+                    k=0.25            91        46      0.626        0.478
+                       k=1            91        46      0.593        0.543
+                 shift=-2q            78        39      0.654        0.462
+                 shift=+2q           105        55      0.619        0.436
+    drop=liquid_to_st_debt            92        47      0.630        0.553
+drop=ebitda_interest_cover            92        47      0.630        0.532
+         drop=altman_z2_em            91        46      0.549        0.457
+                  event-4q            66        29      0.591        0.586

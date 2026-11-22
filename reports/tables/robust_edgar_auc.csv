@@ -1,0 +1,7 @@
+score,failed_firms,controls,auc,auc_ci_lo,auc_ci_hi
+cash CUSUM on Kalman errors (pre-registered),91.0,46.0,0.5817009077878643,0.47908803153368373,0.6777353081700908
+multivariate MCUSUM (pre-registered),81.0,37.0,0.6388054721388055,0.5346606322709264,0.7398661986858522
+cash CUSUM on deviations from the training mean (non-adaptive),91.0,46.0,0.6512183468705208,0.551310917343526,0.740722049689441
+lowest cash ratio in the window (level),91.0,46.0,0.7267080745341615,0.6053153368370761,0.8285057333970377
+lowest Altman Z''-EM in the window (level),83.0,40.0,0.7496987951807229,0.634242864693446,0.855647276784949
+median share of fitted variance on the adaptive level (all analysed firms),,,0.2644328355301086,3.6451281734640965e-09,0.9026501800882082

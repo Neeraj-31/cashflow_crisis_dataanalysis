@@ -1,0 +1,18 @@
+Pre-registration fingerprint, recorded 2026-11-21T12:58:37Z before any detector backtest or simulation run.
+Verify with: sha256sum configs/config.yaml docs/PREREGISTRATION.md
+e12bba1b5624b2612d6824bb220850826b568abdcf381382d20b83c1f040d6f3 *configs/config.yaml
+b9452b3c0e35f247b3a65343d48396f369d28d94dff99afec05a8ad6b2909764 *docs/PREREGISTRATION.md
+
+Addendum 2026-11-21 (later the same day): both files were later extended by logged deviations, so their
+whole-file hashes no longer match. Exact copies of the fingerprinted versions were rebuilt from the
+session's edit history and are kept in docs/prereg_snapshot/; their SHA-256 hashes equal the two hashes
+above. `python -m src.sanity` checks this and checks that every pre-registered config block
+(cohort, archetype, altman_z2_em, layer2, detectors, simulation, masking, firms, ratios, identities,
+cost) is unchanged since the fingerprint.
+
+Cohort proposal fingerprint, recorded 2026-11-21T18:07:02Z after owner approval and BEFORE any cohort financial figure or control candidate's figures were downloaded:
+81693973e9f196ed3ccc4bf1a9c887fced5328cc1e2a0b22fb7719495d0b725e *data/raw/cohort/PROPOSAL.md
+Cohort proposal amendment 1 fingerprint, recorded 2026-11-21T18:10:07Z, before any control candidate's figures were downloaded:
+c1720017c2e0545953e5ab2304a990418de68ee71e9d8ee37c97916596f6b1d6 *data/raw/cohort/PROPOSAL.md
+Cohort proposal amendment 2 fingerprint, recorded 2026-11-21T18:47:02Z, before any control candidate's figures were read:
+586cb53371ca7dca00b2731a47d63fb8f026aa5f273b7ca0dee554d865fe3f00 *data/raw/cohort/PROPOSAL.md

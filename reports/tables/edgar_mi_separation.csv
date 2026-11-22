@@ -1,0 +1,2 @@
+comparison,masked_n,visible_n,cohens_d,d_ci_lo,d_ci_hi,auc,auc_ci_lo,auc_ci_hi
+"peak MI, Masked minus Visible",13,22,0.4047042651151691,-0.33866883819094734,0.774001896302754,0.6818181818181818,0.47893356643356644,0.8461538461538461

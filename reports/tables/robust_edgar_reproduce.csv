@@ -1,0 +1,2 @@
+check,firm_runs,identical,different
+robustness base run reproduces edgar_firm_results.csv,237,237,0

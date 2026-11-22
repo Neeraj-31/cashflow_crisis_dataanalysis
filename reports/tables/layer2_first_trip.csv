@@ -1,0 +1,11 @@
+firm,event_date,event_fy,rule,first_trip_fy,first_trip_tau,lead_fy,lead_years,pre_event_years_evaluable,pre_event_years_tripped
+nmc,2020-04-09,2020,OCF < 0,,,,,6,0
+nmc,2020-04-09,2020,EBITDA / interest < 1.2,,,,,6,0
+nmc,2020-04-09,2020,Debtor days > 270,,,,,6,0
+nmc,2020-04-09,2020,Altman Z''-EM < 4.35 (distress),,,,,6,0
+nmc,2020-04-09,2020,Any rule,,,,,6,0
+jyoti,2017-07-04,2018,OCF < 0,2014,-4,4,3.26,5,3
+jyoti,2017-07-04,2018,EBITDA / interest < 1.2,2014,-4,4,3.26,4,4
+jyoti,2017-07-04,2018,Debtor days > 270,2014,-4,4,3.26,4,4
+jyoti,2017-07-04,2018,Altman Z''-EM < 4.35 (distress),2018,0,0,-0.74,4,1
+jyoti,2017-07-04,2018,Any rule,2014,-4,4,3.26,5,4

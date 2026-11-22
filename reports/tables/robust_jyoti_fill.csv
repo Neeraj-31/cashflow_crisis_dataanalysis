@@ -1,0 +1,15 @@
+fill_missing,rule,first_trip_fy,lead_years,pre_event_years_tripped,archetype,value
+none,OCF < 0,2014.0,3.26,3.0,Visible,
+none,EBITDA / interest < 1.2,2014.0,3.26,4.0,Visible,
+none,Debtor days > 270,2014.0,3.26,4.0,Visible,
+none,Altman Z''-EM < 4.35 (distress),2018.0,-0.74,1.0,Visible,
+none,Any rule,2014.0,3.26,4.0,Visible,
+none,FY2017 value: ocf_to_current_liabilities,,,,Visible,
+none,FY2017 value: altman_z2_em,,,,Visible,
+linear,OCF < 0,2014.0,3.26,3.0,Visible,
+linear,EBITDA / interest < 1.2,2014.0,3.26,4.0,Visible,
+linear,Debtor days > 270,2014.0,3.26,5.0,Visible,
+linear,Altman Z''-EM < 4.35 (distress),2017.0,0.26,2.0,Visible,
+linear,Any rule,2014.0,3.26,5.0,Visible,
+linear,FY2017 value: ocf_to_current_liabilities,,,,Visible,-0.13996586198488173
+linear,FY2017 value: altman_z2_em,,,,Visible,1.6705764348609242

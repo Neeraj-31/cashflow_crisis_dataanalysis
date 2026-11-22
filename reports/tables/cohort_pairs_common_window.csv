@@ -1,0 +1,6 @@
+failed,control,common_years,n_common_years,failed_rule_flag,control_rule_flag
+amtek,amtek_ctrl,2015-2017,3,True,False
+bhushan,bhushan_ctrl,2015-2017,3,True,False
+abg,abg_ctrl,2015-2015,1,True,False
+lanco,lanco_ctrl,2015-2017,3,True,False
+era,era_ctrl,2015-2017,3,True,False

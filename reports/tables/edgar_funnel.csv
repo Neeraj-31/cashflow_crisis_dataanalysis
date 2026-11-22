@@ -1,0 +1,28 @@
+step,count
+failed firms in panel,150
+controls matched,87
+control: identity failure,3
+control: last filing more than 4 quarters before event,2
+control: model failure,1
+control: ok,60
+control: too little training data (0 usable),2
+control: too little training data (1 usable),1
+control: too little training data (10 usable),5
+control: too little training data (11 usable),5
+control: too little training data (5 usable),1
+control: too little training data (6 usable),1
+control: too little training data (7 usable),1
+control: too little training data (8 usable),3
+control: too little training data (9 usable),2
+failed: identity failure,6
+failed: last filing more than 4 quarters before event,2
+failed: model failure,5
+failed: ok,91
+failed: too little training data (10 usable),5
+failed: too little training data (11 usable),11
+failed: too little training data (3 usable),1
+failed: too little training data (4 usable),1
+failed: too little training data (6 usable),3
+failed: too little training data (7 usable),3
+failed: too little training data (8 usable),7
+failed: too little training data (9 usable),15

@@ -1,0 +1,6 @@
+firm,definition,event_date,event_fy,first_any_rule_fy,lead_years_any_rule,archetype,structural_flags_tripped
+nmc,pre-registered,2020-04-09,2020,,,Other,liquidity cover < 1
+nmc,-1 fiscal year,2019-04-09,2019,,,Other,liquidity cover < 1
+nmc,Muddy Waters short-seller report,2019-12-17,2019,,,Other,liquidity cover < 1
+jyoti,pre-registered,2017-07-04,2018,2014.0,3.26,Visible,EBITDA / interest < 1.5
+jyoti,-1 fiscal year,2016-07-04,2017,2014.0,2.26,Visible,EBITDA / interest < 1.5
