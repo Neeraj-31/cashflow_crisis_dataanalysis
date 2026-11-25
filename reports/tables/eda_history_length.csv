@@ -1,0 +1,8 @@
+sample,unit,firms,median,p10,p90,min,max,share_at_least_min_periods,share_at_least_h5_n,note
+EDGAR: every firm that passed Layer 0,quarters,218,15.0,8.0,23.0,0.0,29.0,0.6926605504587156,0.027522935779816515,usable cash-ratio training quarters
+EDGAR: analysed failed firms,quarters,91,17.0,13.0,25.0,12.0,29.0,1.0,0.054945054945054944,
+EDGAR: analysed controls,quarters,46,18.5,13.0,24.5,12.0,29.0,1.0,0.021739130434782608,
+India cohort: failed,years,6,6.0,4.0,7.0,3.0,7.0,0.0,0.0,usable annual training values before the monitored window
+India cohort: control,years,5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,usable annual training values before the monitored window
+NMC Health,years,1,6.0,6.0,6.0,6.0,6.0,0.0,0.0,"all annual values, no training split"
+Jyoti Structures,years,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,annual values up to the training end FY2013

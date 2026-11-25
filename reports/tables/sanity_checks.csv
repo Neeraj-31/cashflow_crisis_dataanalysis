@@ -2,7 +2,7 @@ area,check,status,detail
 provenance,snapshot of configs/config.yaml matches the recorded pre-registration hash,PASS,e12bba1b5624b261
 provenance,snapshot of docs/PREREGISTRATION.md matches the recorded pre-registration hash,PASS,b9452b3c0e35f247
 provenance,pre-registered config blocks unchanged since the fingerprint,PASS,"unchanged: seed, cohort, archetype, altman_z2_em, layer2, detectors, simulation, masking, firms, ratios, identities, cost, negative_controls"
-provenance,config blocks added after the fingerprint (must be logged as deviations),INFO,"cohort_ingest, sanity, edgar"
+provenance,config blocks added after the fingerprint (must be logged as deviations),INFO,"cohort_ingest, sanity, edgar, evaluation, post_hoc, eda"
 provenance,robustness keys added after the fingerprint,INFO,"cusum_k_grid, h_multiplier_grid, edgar_event_shift_quarters, case_event_shift_fy, alt_event_dates, nmc_hidden_debt_multiples, nmc_revealed_debt_usd_bn"
 provenance,global seed is 20261121,PASS,20261121
 provenance,no unseeded or salted random number generators in src/,PASS,none found
@@ -42,16 +42,22 @@ cohort,each control is aligned at its failed firm's event date,PASS,
 cohort,no control is itself a cohort failed firm,PASS,
 cohort,chosen controls lie inside the 0.5-2x total-assets band,PASS,"amtek 1.22x, bhushan 1.46x, abg 1.57x, lanco 0.84x, era 0.92x"
 cohort,"non-12-month fiscal periods are scaled and flagged, not silently mixed",INFO,"amtek: 2, videocon: 4"
-EDGAR,amber (uncorrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+8.3 points [-9.1, +25.7]; detection 62.6%, false alarms 54.3%"
-EDGAR,red (uncorrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+17.8 points [+1.5, +33.1]; detection 39.6%, false alarms 21.7%"
-EDGAR,amber (n-corrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+8.1 points [-9.4, +24.5]; detection 42.9%, false alarms 34.8%"
-EDGAR,red (n-corrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+7.8 points [-4.2, +18.7]; detection 16.5%, false alarms 8.7%"
-EDGAR,Altman Z''-EM distress: alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+39.0 points [+23.8, +54.3]; detection 91.2%, false alarms 52.2%"
+EDGAR,amber (uncorrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+8.3 points [-10.2, +24.7]; detection 62.6%, false alarms 54.3%"
+EDGAR,red (uncorrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+17.8 points [+2.5, +33.1]; detection 39.6%, false alarms 21.7%"
+EDGAR,amber (n-corrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+8.1 points [-10.4, +24.5]; detection 42.9%, false alarms 34.8%"
+EDGAR,red (n-corrected): alarms failed firms more often than healthy controls (detection minus false alarms > 0),WARN,"+7.8 points [-3.1, +18.7]; detection 16.5%, false alarms 8.7%"
+EDGAR,Altman Z''-EM distress: alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+39.0 points [+23.8, +53.3]; detection 91.2%, false alarms 52.2%"
 EDGAR,any Layer 2 rule: alarms failed firms more often than healthy controls (detection minus false alarms > 0),PASS,"+46.7 points [+31.4, +61.9]; detection 92.3%, false alarms 45.7%"
 EDGAR,real-data echo of H4: uncorrected amber false-alarm rate on healthy controls far above 10% nominal,PASS,"54.3% [39.1%, 67.4%]"
 reproducibility,EDGAR rerun (robustness base variant) gives identical per-firm results,PASS,237/237 firm runs identical
 reproducibility,simulation tables regenerate byte-identically from the stored runs,PASS,12 tables; different: none
 reproducibility,Layer 1/2 tables regenerate byte-identically,PASS,7 tables compared; different: none
-report,report.md: numbers traceable to a table or the config,PASS,"639 numbers, 100.0% traced; untraced: none"
-report,explainer.html: numbers traceable to a table or the config,PASS,"579 numbers, 100.0% traced; untraced: none"
-tests,"full test suite (incl. legacy reproduction: CSV-equal, pixel-identical figures)",PASS,52 passed
+report,report.md: numbers traceable to a table or the config,PASS,"839 numbers, 100.0% traced; untraced: none"
+report,explainer.html: numbers traceable to a table or the config,PASS,"1643 numbers, 100.0% traced; untraced: none"
+report,report_short.md: numbers traceable to a table or the config,PASS,"173 numbers, 100.0% traced; untraced: none"
+report,slides.html: numbers traceable to a table or the config,PASS,"219 numbers, 100.0% traced; untraced: none"
+post-hoc,"EDGAR detection-minus-false-alarm CIs are identical in the explainer, report and sanity table (one source: edgar_detection_summary.csv)",PASS,6 methods agree in all three places
+post-hoc,paired-bootstrap table (rules minus each method) exists and its verdicts match its CIs,PASS,"25 rows, 2000 resamples"
+post-hoc,fixed-horizon table exists with every method at every in-window horizon,PASS,"horizons [4, 8, 12, 16], 20 rows"
+post-hoc,"every post-hoc section carries a 'post-hoc' label (explainer Section 8 headings, report 9.7 items)",PASS,"10 explainer headings, 10 report items; unlabelled: none"
+post-hoc,every config block added after the fingerprint is named in the PREREGISTRATION deviations log,PASS,all logged

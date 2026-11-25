@@ -237,19 +237,13 @@ def cohort_checks(cfg, paths):
 
 # ------------------------------------------------------------------ EDGAR results
 def edgar_checks(paths):
+    """Reads the CIs from edgar_detection_summary.csv (the one source, src/evaluation.py) instead of re-drawing
+    them: an earlier version re-bootstrapped here with another seed stream and quoted different CIs (decision #34)."""
     S = T(paths, "edgar_detection_summary")
-    R = T(paths, "edgar_firm_results"); ok = R[R.status == "ok"]
-    f = ok[ok.role == "failed"]; c = ok[(ok.role == "control") & ok.matched_to.isin(f.cik)]
-    rg = np.random.default_rng(np.random.SeedSequence([load_config()["seed"], 999]))
     for r in S.itertuples():
-        col = {"amber (uncorrected)": "first_amber_uncorrected", "red (uncorrected)": "first_red_uncorrected",
-               "amber (n-corrected)": "first_amber_corrected", "red (n-corrected)": "first_red_corrected",
-               "Altman Z''-EM distress": "altman_alarm_q", "any Layer 2 rule": "rule_alarm_q"}[r.method]
-        a, b = f[col].notna().to_numpy(float), c[col].notna().to_numpy(float)
-        bs = np.array([a[rg.integers(0, len(a), len(a))].mean() - b[rg.integers(0, len(b), len(b))].mean() for _ in range(2000)])
-        lo, hi = np.quantile(bs, [.025, .975])
+        lo, hi = r.diff_ci_lo, r.diff_ci_hi
         add("EDGAR", f"{r.method}: alarms failed firms more often than healthy controls (detection minus false alarms > 0)",
-            lo > 0, f"{100 * (a.mean() - b.mean()):+.1f} points [{100 * lo:+.1f}, {100 * hi:+.1f}]; detection {r.detection:.1%}, false alarms {r.false_alarm:.1%}",
+            lo > 0, f"{100 * r.det_minus_fa:+.1f} points [{100 * lo:+.1f}, {100 * hi:+.1f}]; detection {r.detection:.1%}, false alarms {r.false_alarm:.1%}",
             level=None if lo > 0 else "WARN")
     unc = S.set_index("method").loc["amber (uncorrected)"]
     add("EDGAR", "real-data echo of H4: uncorrected amber false-alarm rate on healthy controls far above 10% nominal",
@@ -341,6 +335,53 @@ def report_trace(cfg, paths, report="reports/report.md", label="report.md"):
         level=None if len(miss) == 0 else "WARN")
 
 
+# ------------------------------------------------------------------ post-hoc review checks (added 2026-11-22)
+def posthoc_checks(cfg, paths):
+    S = T(paths, "edgar_detection_summary")
+    exp = (ROOT / "reports" / "explainer.html").read_text(encoding="utf-8") if (ROOT / "reports" / "explainer.html").exists() else ""
+    rep = (ROOT / "reports" / "report.md").read_text(encoding="utf-8") if (ROOT / "reports" / "report.md").exists() else ""
+    san = {r["check"]: r["detail"] for r in rows if r["area"] == "EDGAR"}
+    miss = []
+    for r in S.itertuples():
+        lo, hi = f"{100 * r.diff_ci_lo:+.1f}", f"{100 * r.diff_ci_hi:+.1f}"
+        if f"({lo} to {hi})" not in exp: miss.append(f"explainer:{r.method}")
+        if f"({lo} to {hi})" not in rep: miss.append(f"report:{r.method}")
+        if not any(r.method in k and f"[{lo}, {hi}]" in v for k, v in san.items()): miss.append(f"sanity:{r.method}")
+    add("post-hoc", "EDGAR detection-minus-false-alarm CIs are identical in the explainer, report and sanity table (one source: "
+        "edgar_detection_summary.csv)", not miss, "; ".join(miss) or f"{len(S)} methods agree in all three places")
+    f = paths.tables / "posthoc_paired_rules.csv"
+    if f.exists():
+        P = pd.read_csv(f)
+        cons = ((P.verdict.str.startswith("not")) == ((P.ci_lo <= 0) & (P.ci_hi >= 0))).all()
+        add("post-hoc", "paired-bootstrap table (rules minus each method) exists and its verdicts match its CIs", bool(cons),
+            f"{len(P)} rows, {P.resamples.iloc[0]} resamples")
+    else:
+        add("post-hoc", "paired-bootstrap table exists", False, "posthoc_paired_rules.csv missing")
+    f = paths.tables / "posthoc_fixed_horizon.csv"
+    hz = [h for h in cfg["post_hoc"]["fixed_horizons_quarters"] if h < cfg["edgar"]["monitor_quarters"]]
+    if f.exists():
+        Fh = pd.read_csv(f); ok = all(len(Fh[Fh.horizon_quarters == h]) == len(S) for h in hz)
+        add("post-hoc", "fixed-horizon table exists with every method at every in-window horizon", ok,
+            f"horizons {cfg['post_hoc']['fixed_horizons_quarters']}, {len(Fh)} rows")
+    else:
+        add("post-hoc", "fixed-horizon table exists", False, "posthoc_fixed_horizon.csv missing")
+    sec = re.search(r"<h2>8\. Additional checks \(post-hoc\)</h2>(.*?)<h2", exp, re.S)
+    h3 = re.findall(r"<h3[^>]*>(.*?)</h3>", sec.group(1), re.S) if sec else []
+    unl = [re.sub("<[^>]+>", "", h)[:40] for h in h3 if "post-hoc" not in h]
+    unl += [re.sub("<[^>]+>", "", h)[:40] for h in re.findall(r'<h3 class="posthoc">(.*?)</h3>', exp, re.S) if "post-hoc" not in h]
+    rsec = re.search(r"\*\*9\.7 Additional checks \(post-hoc / exploratory\)\.\*\*(.*?)\n## ", rep, re.S)
+    bullets = re.findall(r"^- \*([^*]+)\*", rsec.group(1), re.M) if rsec else []
+    unl += [b for b in bullets if "post-hoc" not in b]
+    add("post-hoc", "every post-hoc section carries a 'post-hoc' label (explainer Section 8 headings, report 9.7 items)",
+        bool(sec) and bool(h3) and bool(rsec) and not unl,
+        f"{len(h3)} explainer headings, {len(bullets)} report items; unlabelled: {', '.join(unl) or 'none'}")
+    snap = yaml.safe_load((ROOT / "docs" / "prereg_snapshot" / "config.yaml").read_text(encoding="utf-8"))
+    dev = (ROOT / "docs" / "PREREGISTRATION.md").read_text(encoding="utf-8").split("## 10. Deviations log")[-1]
+    unlogged = [k for k in cfg if k not in snap and f"`{k}`" not in dev]
+    add("post-hoc", "every config block added after the fingerprint is named in the PREREGISTRATION deviations log", not unlogged,
+        "unlogged: " + ", ".join(unlogged) if unlogged else "all logged")
+
+
 def tests():
     r = subprocess.run([sys.executable, "-m", "pytest"], cwd=ROOT, capture_output=True, text=True)
     found = re.findall(r"(\d+) (passed|failed|error)", r.stdout)
@@ -356,6 +397,11 @@ def main(argv=None):
     cohort_checks(cfg, paths); edgar_checks(paths); determinism(paths); report_trace(cfg, paths)
     if (ROOT / "reports" / "explainer.html").exists():
         report_trace(cfg, paths, "reports/explainer.html", "explainer.html")
+    if (ROOT / "reports" / "report_short.md").exists():
+        report_trace(cfg, paths, "reports/report_short.md", "report_short.md")
+    if (ROOT / "reports" / "slides.html").exists():
+        report_trace(cfg, paths, "reports/slides.html", "slides.html")
+    posthoc_checks(cfg, paths)
     if not a.skip_tests:
         tests()
     out = pd.DataFrame(rows)

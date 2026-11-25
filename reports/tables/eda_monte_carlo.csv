@@ -1,0 +1,10 @@
+use,resamples,tail_probability,mc_se_points
+bootstrap threshold h (detectors.bootstrap.n_resamples),2000,0.05,0.4873397172404482
+bootstrap threshold h (detectors.bootstrap.n_resamples),2000,0.1,0.6708203932499369
+EDGAR CIs (evaluation.ci_resamples),2000,0.05,0.4873397172404482
+EDGAR CIs (evaluation.ci_resamples),2000,0.1,0.6708203932499369
+simulation CIs (simulation.ci_resamples),2000,0.05,0.4873397172404482
+simulation CIs (simulation.ci_resamples),2000,0.1,0.6708203932499369
+parametric-bootstrap refits (decision #15),200,0.05,1.5411035007422442
+parametric-bootstrap refits (decision #15),200,0.1,2.121320343559643
+"simulated false-alarm rate, 500 firms per cell (sampling SE, not Monte Carlo)",500,0.1,1.3416407864998738

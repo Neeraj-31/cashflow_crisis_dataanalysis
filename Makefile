@@ -1,8 +1,8 @@
 PYTHON ?= python
 
-all: cohort sim real edgar robust figures sanity report explainer
+all: cohort sim real edgar robust eda figures sanity report explainer
 
-.PHONY: all cohort sim real edgar robust figures sanity report explainer test clean
+.PHONY: all cohort sim real edgar robust eda figures sanity report explainer test clean
 
 ## Simulation and calibration study (about 1-2 hours on 9 workers) -> data/processed/sim_runs.pkl.gz + sim_* tables
 sim:
@@ -37,6 +37,10 @@ figures:
 robust:
 	$(PYTHON) -m src.robustness
 
+## Design-choice EDA (training quarters only, descriptive) -> reports/tables/eda_*.csv
+eda:
+	$(PYTHON) -m src.eda
+
 ## Sanity and common-sense checks (incl. the test suite) -> reports/tables/sanity_checks.csv
 sanity:
 	$(PYTHON) -m src.sanity
@@ -44,6 +48,7 @@ sanity:
 ## Report (every number read from reports/tables) -> reports/report.md
 report:
 	$(PYTHON) -m src.reporting.write_report
+	$(PYTHON) -m src.reporting.write_short_report
 
 ## Plain-language explainer -> reports/explainer.html and reports/explainer.pdf
 explainer:

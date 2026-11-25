@@ -5,3 +5,10 @@ __pycache__/
 .ipynb_checkpoints/
 *.partial
 .claude/settings.local.json
+
+# write-ups kept local (not uploaded)
+reports/explainer.html
+reports/explainer.pdf
+reports/report.md
+reports/report_short.*
+reports/slides.html

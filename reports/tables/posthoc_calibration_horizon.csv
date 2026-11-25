@@ -1,0 +1,11 @@
+item,value
+calibration horizon (detectors.monitor_horizon),16.0
+EDGAR monitored quarters (edgar.monitor_quarters),16.0
+simulation monitored periods (simulation.monitor_length),16.0
+EDGAR cash-ratio steps actually monitored: median,16.0
+EDGAR cash-ratio steps actually monitored: 10th percentile,13.0
+EDGAR cash-ratio steps actually monitored: minimum,6.0
+EDGAR share of analysed firms with all monitored steps observed,0.5547445255474452
+recomputed h_cash equals the main run's h_cash (share of analysed firms),1.0
+"simulation (n=28, nominal 10%, uncorrected): false alarms when only the first 13 of 16 calibrated steps are monitored",0.308
+"simulation (n=28, nominal 10%, uncorrected): false alarms when only the first 16 of 16 calibrated steps are monitored",0.342

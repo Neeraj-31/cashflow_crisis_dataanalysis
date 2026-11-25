@@ -169,7 +169,9 @@ def _instant(f: pd.DataFrame) -> pd.Series:
     return s[~s.index.duplicated(keep="last")]
 
 
-def quarterly_canonical(facts: pd.DataFrame) -> pd.DataFrame:
+def quarterly_canonical(facts: pd.DataFrame, flows: str = "ttm") -> pd.DataFrame:
+    """flows='ttm' (pre-registered, config edgar.flows): trailing-twelve-month sums of de-cumulated quarters.
+    flows='quarter' (post-hoc TTM-overlap check only): single-quarter flows x 4 (annualised, no overlap)."""
     cols = {}
     for name, tags in TAGS.items():
         s = None
@@ -187,7 +189,7 @@ def quarterly_canonical(facts: pd.DataFrame) -> pd.DataFrame:
     q = q.reindex(pd.period_range(q.index.min(), q.index.max(), freq="Q"))
     for c in FLOWS:                                     # trailing-twelve-month flows
         if c in q:
-            q[c] = q[c].rolling(4, min_periods=4).sum()
+            q[c] = q[c].rolling(4, min_periods=4).sum() if flows == "ttm" else 4 * q[c]
     if "ebit" in q and "depreciation" in q:
         q["ebitda"] = q.ebit + q.depreciation
     if "equity_total" in q:

@@ -1,0 +1,24 @@
+sample,group,role,firms
+EDGAR (analysed),Mining (incl. oil and gas),failed,27
+EDGAR (analysed),Manufacturing,failed,22
+EDGAR (analysed),"Transportation, communications, utilities",failed,14
+EDGAR (analysed),Retail trade,failed,14
+EDGAR (analysed),Services,failed,11
+EDGAR (analysed),Wholesale trade,failed,3
+EDGAR (analysed),Manufacturing,control,16
+EDGAR (analysed),Mining (incl. oil and gas),control,10
+EDGAR (analysed),"Transportation, communications, utilities",control,8
+EDGAR (analysed),Services,control,8
+EDGAR (analysed),Retail trade,control,4
+India cohort,Airline,negative_control,1
+India cohort,Auto Components,control,1
+India cohort,Auto Components,failed,1
+India cohort,Civil Construction,control,1
+India cohort,Civil Construction,failed,1
+India cohort,Civil Construction (judgement),control,1
+India cohort,Civil Construction (judgement),failed,1
+India cohort,Commercial Vehicles (Screener),control,1
+India cohort,Commercial Vehicles (Screener),failed,1
+India cohort,Consumer Electronics,failed,1
+India cohort,Iron & Steel,control,1
+India cohort,Iron & Steel,failed,1

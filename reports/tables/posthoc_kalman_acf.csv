@@ -1,0 +1,25 @@
+input,errors,lag_quarters,controls,median_per_firm_acf,pooled_acf
+TTM ratio (pre-registered input),training (in-sample),1,46,0.012400859006410133,0.10554633863334102
+TTM ratio (pre-registered input),training (in-sample),2,46,-0.03339019435834355,0.02176935376475849
+TTM ratio (pre-registered input),training (in-sample),3,46,-0.0432534476305871,-0.02305956937094564
+TTM ratio (pre-registered input),training (in-sample),4,46,-0.12548522074995533,-0.04730902459322225
+TTM ratio (pre-registered input),monitored window,1,46,0.003965844304939415,0.2733585651068198
+TTM ratio (pre-registered input),monitored window,2,46,-0.01432527473006032,0.2128506014880666
+TTM ratio (pre-registered input),monitored window,3,45,-0.06126266858522959,0.17180800700577067
+TTM ratio (pre-registered input),monitored window,4,44,-0.28012897632050965,0.14726037483456098
+single-quarter ratio (no overlap),training (in-sample),1,40,-0.03952611423357656,0.04607527459024616
+single-quarter ratio (no overlap),training (in-sample),2,40,-0.2452491554655145,-0.20765887125289897
+single-quarter ratio (no overlap),training (in-sample),3,40,-0.056237266813718316,-0.0027878165577048856
+single-quarter ratio (no overlap),training (in-sample),4,40,0.23235320037210894,0.29687202325722006
+single-quarter ratio (no overlap),monitored window,1,40,-0.033268846625318926,-0.27998351788326453
+single-quarter ratio (no overlap),monitored window,2,40,-0.1198290068702845,0.027359680576963762
+single-quarter ratio (no overlap),monitored window,3,40,-0.08693579676322283,0.01481815662892081
+single-quarter ratio (no overlap),monitored window,4,40,0.1704010158252697,0.0806298765036447
+year-on-year change of the single-quarter ratio,training (in-sample),1,29,-0.029286945340451013,0.02555342679183512
+year-on-year change of the single-quarter ratio,training (in-sample),2,29,-0.01398268202801055,0.026266625185099323
+year-on-year change of the single-quarter ratio,training (in-sample),3,29,-0.12457051749528701,-0.04768423682026024
+year-on-year change of the single-quarter ratio,training (in-sample),4,29,-0.39750339031399323,-0.3266976096226185
+year-on-year change of the single-quarter ratio,monitored window,1,29,0.009182936399389798,-0.4300124966811758
+year-on-year change of the single-quarter ratio,monitored window,2,29,-0.027662446350939087,0.04653619922345932
+year-on-year change of the single-quarter ratio,monitored window,3,29,-0.010092536735824751,0.00195061046142175
+year-on-year change of the single-quarter ratio,monitored window,4,29,-0.44459015391651796,-0.2387290845939737

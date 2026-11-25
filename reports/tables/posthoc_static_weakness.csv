@@ -1,0 +1,5 @@
+method,role,firms,alarmed,alarmed_in_first_3_monitored_quarters,share_of_alarms_in_first_3_quarters,of_those_already_on_before_window,flagged_before_window_all_firms
+any Layer 2 rule,failed,91,84,47,0.5595238095238095,0.6808510638297872,0.3626373626373626
+any Layer 2 rule,control,46,21,14,0.6666666666666666,0.7857142857142857,0.2608695652173913
+Altman Z''-EM distress,failed,91,83,55,0.6626506024096386,0.9090909090909091,0.5494505494505495
+Altman Z''-EM distress,control,46,24,19,0.7916666666666666,0.8421052631578947,0.34782608695652173

@@ -1,0 +1,238 @@
+cik,role,matched_to,event_q,status,first_amber_uncorrected,first_red_uncorrected,first_amber_corrected,first_red_corrected,altman_alarm_q,rule_alarm_q
+38079,failed,38079,8062,too little training data (6 usable),,,,,,
+837173,failed,837173,8062,too little training data (6 usable),,,,,8050.0,8053.0
+1301063,failed,1301063,8062,too little training data (9 usable),,,,,8047.0,8049.0
+351817,failed,351817,8064,too little training data (8 usable),,,,,,
+1037676,failed,1037676,8064,ok,8056.0,8056.0,8064.0,,8049.0,8049.0
+1064728,failed,1064728,8065,ok,8055.0,,8059.0,,8055.0,8053.0
+943861,failed,943861,8065,too little training data (9 usable),,,,,8050.0,8054.0
+945436,failed,945436,8065,ok,8051.0,,,,8050.0,8050.0
+743988,control,945436,8065,too little training data (7 usable),,,,,,
+1022646,failed,1022646,8065,ok,8063.0,8063.0,8063.0,,8050.0,
+1168213,failed,1168213,8065,too little training data (8 usable),,,,,8056.0,8055.0
+1326428,failed,1326428,8065,too little training data (9 usable),,,,,,
+77159,failed,77159,8065,too little training data (9 usable),,,,,8050.0,8051.0
+1349436,failed,1349436,8065,ok,8061.0,8061.0,8063.0,8063.0,8050.0,8065.0
+33213,control,1349436,8065,ok,8053.0,,8056.0,,,
+922475,failed,922475,8066,too little training data (11 usable),,,,,,8058.0
+318996,failed,318996,8067,too little training data (11 usable),,,,,8059.0,8059.0
+73756,control,318996,8067,too little training data (11 usable),,,,,,
+1109189,failed,1109189,8067,too little training data (7 usable),,,,,8060.0,8062.0
+1434842,failed,1434842,8068,too little training data (8 usable),,,,,8054.0,8063.0
+750813,control,1434842,8068,too little training data (0 usable),,,,,,
+1384072,failed,1384072,8068,too little training data (8 usable),,,,,,8053.0
+1396279,failed,1396279,8068,too little training data (9 usable),,,,,8060.0,8059.0
+1088162,failed,1088162,8068,too little training data (9 usable),,,,,8053.0,8053.0
+2178,failed,2178,8069,too little training data (9 usable),,,,,,8066.0
+1403853,failed,1403853,8069,too little training data (9 usable),,,,,8054.0,8065.0
+1469510,control,1403853,8069,too little training data (9 usable),,,,,8054.0,
+98222,failed,98222,8069,ok,,,,,8064.0,8062.0
+1030749,failed,1030749,8069,ok,8061.0,8062.0,8067.0,,8064.0,8062.0
+1121484,control,1030749,8069,ok,8061.0,,,,,
+1013871,failed,1013871,8069,ok,,,,,8063.0,8063.0
+1373835,control,1013871,8069,ok,,,,,8054.0,
+1126294,failed,1126294,8069,ok,,,,,8065.0,8068.0
+70145,control,1126294,8069,ok,,,,,8062.0,
+18172,failed,18172,8069,too little training data (9 usable),,,,,8062.0,8057.0
+886328,failed,886328,8070,too little training data (11 usable),,,,,,8055.0
+1083743,control,886328,8070,too little training data (10 usable),,,,,8055.0,8055.0
+1311230,failed,1311230,8070,too little training data (10 usable),,,,,8055.0,8055.0
+899460,control,1311230,8070,too little training data (10 usable),,,,,8055.0,8055.0
+1093207,failed,1093207,8070,too little training data (9 usable),,,,,8055.0,8055.0
+781902,control,1093207,8070,too little training data (8 usable),,,,,,8055.0
+1171012,failed,1171012,8070,"identity failure: [CIK1171012] identity 'EBITDA >= EBIT' fails at row fy=8060: ebitda=-1.503e+12, ebit=-2.291e+07 (diff 1.503e+12, tol 3.037e+04; columns ['ebitda'] vs ",,,,,,
+49615,control,1171012,8070,too little training data (10 usable),,,,,8055.0,8055.0
+880460,failed,880460,8070,too little training data (9 usable),,,,,,8055.0
+1301712,failed,1301712,8070,too little training data (8 usable),,,,,,8055.0
+747540,control,1301712,8070,too little training data (6 usable),,,,,8069.0,8067.0
+1166365,failed,1166365,8071,too little training data (4 usable),,,,,,8056.0
+104897,failed,104897,8071,too little training data (8 usable),,,,,,
+19871,control,104897,8071,too little training data (11 usable),,,,,,
+38984,failed,38984,8071,too little training data (6 usable),,,,,8056.0,8058.0
+1058623,failed,1058623,8071,too little training data (11 usable),,,,,8056.0,8062.0
+1533758,control,1058623,8071,too little training data (9 usable),,,,,8064.0,
+1335103,failed,1335103,8071,too little training data (10 usable),,,,,8059.0,8056.0
+1059784,control,1335103,8071,too little training data (10 usable),,,,,8058.0,8056.0
+1088787,failed,1088787,8071,"identity failure: [CIK1088787] identity 'EBITDA >= EBIT' fails at row fy=8055: ebitda=-2.337e+06, ebit=-1.992e+06 (diff 3.448e+05, tol 1.006e+04; columns ['ebitda'] vs ",,,,,,
+843006,control,1088787,8071,ok,,,,,,
+1471261,failed,1471261,8071,too little training data (10 usable),,,,,8061.0,8056.0
+1178104,failed,1178104,8071,too little training data (11 usable),,,,,8056.0,8056.0
+1094084,control,1178104,8071,"identity failure: [CIK1094084] identity 'EBITDA >= EBIT' fails at row fy=8068: ebitda=-5.419e+06, ebit=-5.394e+06 (diff 2.464e+04, tol 1.452e+04; columns ['ebitda'] vs ",,,,,,
+868725,failed,868725,8071,too little training data (11 usable),,,,,8056.0,8056.0
+72162,control,868725,8071,too little training data (11 usable),,,,,,
+316300,failed,316300,8072,ok,,,,,8057.0,8060.0
+1509991,control,316300,8072,too little training data (11 usable),,,,,,
+1294250,failed,1294250,8072,too little training data (11 usable),,,,,8057.0,8068.0
+920321,failed,920321,8072,too little training data (11 usable),,,,,8057.0,8057.0
+1000623,control,920321,8072,ok,,,,,,
+878079,failed,878079,8072,too little training data (9 usable),,,,,8061.0,
+1394872,failed,1394872,8072,"identity failure: [CIK1394872] identity 'EBITDA >= EBIT' fails at row fy=8057: ebitda=-2.664e+06, ebit=-2.657e+06 (diff 6,263, tol 320.9; columns ['ebitda'] vs ['ebit']",,,,,,
+1138978,control,1394872,8072,too little training data (10 usable),,,,,8068.0,8057.0
+1382911,failed,1382911,8072,ok,,,,,8057.0,8057.0
+1114220,control,1382911,8072,ok,,,,,8057.0,8057.0
+1400891,failed,1400891,8072,ok,8060.0,,8062.0,,8057.0,8057.0
+1437107,control,1400891,8072,ok,8072.0,,,,,
+739708,failed,739708,8072,ok,8060.0,,8062.0,,8057.0,8057.0
+1334978,failed,1334978,8072,ok,,,,,8057.0,
+1362988,control,1334978,8072,too little training data (0 usable),,,,,,
+34115,failed,34115,8072,too little training data (11 usable),,,,,8057.0,8057.0
+1018840,control,34115,8072,ok,,,,,,
+1361937,failed,1361937,8073,ok,,,,,,8060.0
+23194,control,1361937,8073,ok,8062.0,8062.0,8063.0,,8059.0,8061.0
+1031296,failed,1031296,8073,ok,8067.0,8067.0,8067.0,8067.0,8058.0,8067.0
+715957,control,1031296,8073,ok,8058.0,,8063.0,,8058.0,
+1402281,failed,1402281,8073,ok,8063.0,8063.0,8063.0,8063.0,8058.0,8058.0
+928022,control,1402281,8073,ok,8058.0,8060.0,8062.0,8063.0,8059.0,8062.0
+753772,failed,753772,8073,ok,,,,,8058.0,8058.0
+1397516,failed,1397516,8073,ok,8063.0,8071.0,8065.0,,8058.0,8059.0
+1429896,failed,1429896,8074,last filing more than 4 quarters before event,,,,,,
+1357115,control,1429896,8074,last filing more than 4 quarters before event,,,,,,
+741815,failed,741815,8074,ok,,,,,8059.0,8059.0
+106455,failed,106455,8075,ok,8071.0,8071.0,8073.0,8074.0,8060.0,8060.0
+1412347,failed,1412347,8075,ok,8067.0,,,,,8062.0
+1310067,failed,1310067,8075,ok,8060.0,,8064.0,,8060.0,8060.0
+885639,control,1310067,8075,ok,,,,,,
+105608,failed,105608,8075,ok,8060.0,,8065.0,,8065.0,8060.0
+50292,control,105608,8075,ok,,,,,,8065.0
+1549145,failed,1549145,8075,too little training data (3 usable),,,,,8060.0,8060.0
+1504389,control,1549145,8075,too little training data (8 usable),,,,,8060.0,8060.0
+1407805,failed,1407805,8075,ok,,,,,,8071.0
+1353722,control,1407805,8075,ok,,,,,,
+1376912,failed,1376912,8075,ok,,,,,,8062.0
+1432963,control,1376912,8075,ok,,,,,8060.0,8060.0
+872248,failed,872248,8075,ok,8061.0,8062.0,8063.0,8064.0,8060.0,8064.0
+1450390,failed,1450390,8075,last filing more than 4 quarters before event,,,,,,
+820901,control,1450390,8075,last filing more than 4 quarters before event,,,,,,
+76321,failed,76321,8075,ok,8064.0,8064.0,8066.0,8067.0,8064.0,8066.0
+1347613,failed,1347613,8075,model failure: ValueError,,,,,8060.0,8060.0
+1375151,control,1347613,8075,ok,,,,,8060.0,8060.0
+75439,failed,75439,8076,ok,8071.0,8071.0,8072.0,,8063.0,8061.0
+1434524,control,75439,8076,ok,,,,,8064.0,8061.0
+1004980,failed,1004980,8076,ok,8075.0,8075.0,8075.0,8075.0,8061.0,
+4904,control,1004980,8076,ok,,,,,8061.0,
+1012477,failed,1012477,8076,too little training data (7 usable),,,,,8061.0,8061.0
+95953,control,1012477,8076,ok,,,,,,8067.0
+1013238,failed,1013238,8076,ok,,,,,8061.0,8061.0
+811240,control,1013238,8076,ok,,,,,8061.0,8061.0
+1024126,failed,1024126,8076,ok,,,,,8061.0,8063.0
+744187,control,1024126,8076,ok,,,,,,
+1282266,failed,1282266,8076,ok,8071.0,8071.0,8076.0,,8061.0,8071.0
+1208261,failed,1208261,8076,model failure: ValueError,,,,,8061.0,8061.0
+863894,control,1208261,8076,ok,,,,,8067.0,8061.0
+1140310,failed,1140310,8076,ok,8064.0,,,,8061.0,8061.0
+1518487,control,1140310,8076,too little training data (11 usable),,,,,,8062.0
+350403,failed,350403,8076,ok,8067.0,,,,8072.0,8067.0
+1109196,failed,1109196,8076,ok,,,,,8061.0,8061.0
+1509261,control,1109196,8076,ok,,,,,8061.0,8061.0
+1403802,failed,1403802,8076,ok,,,,,8061.0,8061.0
+1360565,control,1403802,8076,ok,8065.0,,8065.0,,,
+13239,failed,13239,8077,ok,8064.0,,,,8062.0,8064.0
+74303,control,13239,8077,ok,8063.0,8065.0,8065.0,8066.0,8065.0,
+1573166,failed,1573166,8077,too little training data (9 usable),,,,,8062.0,8065.0
+844965,control,1573166,8077,ok,8065.0,,8066.0,,,
+1265572,failed,1265572,8077,ok,,,,,8062.0,8067.0
+1441849,failed,1441849,8077,ok,8075.0,8075.0,8077.0,,8075.0,8074.0
+73887,failed,73887,8077,ok,,,,,,8069.0
+827809,failed,827809,8077,ok,,,,,8065.0,8063.0
+1356576,control,827809,8077,ok,,,,,,
+1552845,failed,1552845,8077,ok,8075.0,8075.0,,,8062.0,8062.0
+811222,control,1552845,8077,model failure: ValueError,,,,,8062.0,8062.0
+1071411,failed,1071411,8077,ok,,,,,8062.0,8062.0
+320121,control,1071411,8077,ok,,,,,8062.0,8062.0
+1516479,failed,1516479,8077,too little training data (11 usable),,,,,8070.0,8070.0
+1070494,control,1516479,8077,ok,8062.0,,,,8063.0,8062.0
+1265107,failed,1265107,8078,ok,8063.0,8073.0,8069.0,8075.0,8063.0,8073.0
+771497,control,1265107,8078,ok,8067.0,,,,,
+1437106,failed,1437106,8078,ok,8063.0,8063.0,8065.0,8071.0,8063.0,8073.0
+1439404,control,1437106,8078,ok,8076.0,8076.0,,,8076.0,8063.0
+1555177,failed,1555177,8078,too little training data (10 usable),,,,,,8064.0
+1575051,control,1555177,8078,too little training data (5 usable),,,,,,
+1528837,failed,1528837,8078,ok,,,,,8063.0,8063.0
+724571,failed,724571,8078,ok,8067.0,,8068.0,,8072.0,8067.0
+1518403,failed,1518403,8078,ok,8064.0,8064.0,8064.0,,,8063.0
+2034,failed,2034,8078,ok,,,,,8072.0,8072.0
+1584952,failed,1584952,8079,too little training data (9 usable),,,,,8064.0,8064.0
+893538,control,1584952,8079,ok,,,,,8064.0,
+1555082,failed,1555082,8079,too little training data (10 usable),,,,,,8064.0
+896985,failed,896985,8079,ok,8064.0,8064.0,8071.0,8072.0,8064.0,8071.0
+1579010,failed,1579010,8079,too little training data (7 usable),,,,,8064.0,8064.0
+931336,failed,931336,8079,ok,,,,,8075.0,8075.0
+1278027,control,931336,8079,ok,8066.0,,8074.0,,,
+1405073,failed,1405073,8079,ok,8066.0,,,,8064.0,8064.0
+1273441,control,1405073,8079,ok,,,,,,
+1526689,failed,1526689,8079,ok,,,,,8064.0,8064.0
+1461993,failed,1461993,8079,model failure: ValueError,,,,,8067.0,8064.0
+1352081,control,1461993,8079,ok,,,,,,
+708819,failed,708819,8080,ok,8078.0,8078.0,,,8073.0,8075.0
+849869,control,708819,8080,ok,8069.0,,,,,
+1496818,failed,1496818,8080,too little training data (8 usable),,,,,8065.0,8068.0
+1448558,control,1496818,8080,"identity failure: [CIK1448558] identity 'EBITDA >= EBIT' fails at row fy=8074: ebitda=-1.695e+06, ebit=-1.676e+06 (diff 1.899e+04, tol 2,331; columns ['ebitda'] vs ['eb",,,,,,
+1056087,failed,1056087,8080,ok,,,,,8065.0,8076.0
+712034,control,1056087,8080,ok,8065.0,8071.0,8073.0,,8065.0,
+278130,failed,278130,8080,ok,8077.0,8078.0,,,8077.0,8076.0
+320575,failed,320575,8080,ok,,,,,8065.0,8065.0
+1056386,failed,1056386,8080,ok,,,,,8065.0,
+1082923,control,1056386,8080,ok,,,,,,
+1456212,failed,1456212,8080,"identity failure: [CIK1456212] identity 'EBITDA >= EBIT' fails at row fy=8062: ebitda=2.168e+04, ebit=2.624e+04 (diff 4,558, tol 1,020; columns ['ebitda'] vs ['ebit'])",,,,,,
+1396536,control,1456212,8080,"identity failure: [CIK1396536] identity 'EBITDA >= EBIT' fails at row fy=8060: ebitda=-9.192e+05, ebit=-9.189e+05 (diff 254, tol 14.04; columns ['ebitda'] vs ['ebit'])",,,,,,
+1505497,failed,1505497,8080,ok,8069.0,8069.0,8071.0,,8065.0,8065.0
+1136174,control,1505497,8080,ok,8072.0,8073.0,8073.0,8073.0,8065.0,8065.0
+920448,failed,920448,8080,ok,8075.0,,,,8065.0,8065.0
+1089143,control,920448,8080,ok,8070.0,8077.0,8071.0,,8065.0,
+1009672,failed,1009672,8080,ok,,,,,8079.0,8066.0
+1255474,failed,1255474,8081,ok,8071.0,8080.0,,,8066.0,8067.0
+1358071,control,1255474,8081,ok,8075.0,8080.0,8081.0,,8067.0,8066.0
+1375618,failed,1375618,8081,ok,8072.0,,8074.0,,8066.0,8066.0
+1436942,control,1375618,8081,ok,,,,,,
+20520,failed,20520,8081,ok,8080.0,8080.0,8080.0,,8066.0,8071.0
+1560385,control,20520,8081,ok,8068.0,,8069.0,,,
+1436161,failed,1436161,8081,ok,,,,,8066.0,8066.0
+1413119,control,1436161,8081,ok,,,,,8066.0,8066.0
+949039,failed,949039,8081,ok,8074.0,8080.0,8076.0,,8080.0,8080.0
+315852,control,949039,8081,ok,8067.0,,,,,
+1051251,failed,1051251,8081,ok,8067.0,,8071.0,,8066.0,8073.0
+1319947,control,1051251,8081,ok,8076.0,8081.0,8076.0,8081.0,8081.0,
+6885,failed,6885,8081,ok,8076.0,,,,,8074.0
+1166126,failed,1166126,8081,ok,,,,,8066.0,8081.0
+844143,failed,844143,8081,ok,8075.0,,,,8066.0,8066.0
+3116,failed,3116,8081,ok,,,,,8075.0,8075.0
+1309402,control,3116,8081,ok,,,,,,8071.0
+1131227,failed,1131227,8081,ok,8075.0,8079.0,8075.0,,8077.0,8067.0
+859598,control,1131227,8081,ok,8066.0,,8066.0,,,8066.0
+798949,failed,798949,8081,ok,8072.0,,,,8066.0,
+878726,failed,878726,8081,ok,8066.0,,8068.0,,8078.0,8066.0
+902274,failed,902274,8081,ok,8080.0,8081.0,,,8070.0,8070.0
+939930,failed,939930,8081,ok,8079.0,8080.0,,,8080.0,8068.0
+877422,control,939930,8081,too little training data (1 usable),,,,,,
+1459482,failed,1459482,8081,ok,8079.0,8080.0,,,8066.0,8066.0
+1394638,control,1459482,8081,ok,,,,,8066.0,8066.0
+1502034,failed,1502034,8081,ok,8067.0,8072.0,8067.0,8072.0,8072.0,
+1437557,failed,1437557,8081,"identity failure: [CIK1437557] identity 'EBITDA >= EBIT' fails at row fy=8067: ebitda=-1.879e+07, ebit=-1.863e+07 (diff 1.62e+05, tol 5.352e+04; columns ['ebitda'] vs [",,,,,,
+83350,control,1437557,8081,ok,,,,,,
+895126,failed,895126,8081,ok,,,,,8066.0,8066.0
+1433270,control,895126,8081,ok,8074.0,,,,8067.0,8067.0
+881524,failed,881524,8082,ok,8070.0,8070.0,8078.0,,8067.0,8070.0
+1269021,control,881524,8082,ok,,,,,8067.0,8067.0
+1013606,failed,1013606,8082,model failure: ValueError,,,,,8067.0,8067.0
+884624,control,1013606,8082,ok,,,,,,
+1549848,failed,1549848,8082,ok,,,,,8077.0,8067.0
+1211351,failed,1211351,8082,ok,8068.0,8068.0,8078.0,8079.0,8067.0,8078.0
+1609253,failed,1609253,8082,too little training data (9 usable),,,,,8067.0,
+14195,failed,14195,8082,ok,,,,,8080.0,8076.0
+1042893,control,14195,8082,ok,,,,,,8070.0
+1512077,failed,1512077,8082,ok,8068.0,8068.0,8071.0,8080.0,8067.0,8067.0
+1366868,control,1512077,8082,ok,8082.0,,,,8067.0,8076.0
+1498301,failed,1498301,8082,ok,8069.0,8069.0,,,8069.0,8069.0
+745732,control,1498301,8082,ok,8077.0,,8081.0,,,
+945764,failed,945764,8082,ok,,,,,,
+1458891,failed,1458891,8082,ok,8069.0,8081.0,8081.0,,8078.0,8067.0
+884217,failed,884217,8082,ok,,,,,8067.0,8067.0
+884940,failed,884940,8082,ok,8073.0,8074.0,8075.0,,8071.0,8073.0
+18255,control,884940,8082,ok,8069.0,,8072.0,,,8081.0
+314808,failed,314808,8082,model failure: ValueError,,,,,8080.0,8074.0
+732834,control,314808,8082,ok,8075.0,,8082.0,,8067.0,
+1514732,failed,1514732,8082,"identity failure: [CIK1514732] identity 'EBITDA >= EBIT' fails at row fy=8072: ebitda=-2.05e+07, ebit=-1.992e+07 (diff 5.8e+05, tol 1.6e+05; columns ['ebitda'] vs ['ebi",,,,,,
+56868,control,1514732,8082,ok,,,,,8081.0,
+904979,failed,904979,8082,ok,8081.0,8081.0,8081.0,8081.0,8081.0,8081.0
+1455926,failed,1455926,8082,too little training data (11 usable),,,,,8071.0,8067.0
+1615780,control,1455926,8082,too little training data (8 usable),,,,,8067.0,8067.0

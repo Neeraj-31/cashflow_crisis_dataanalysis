@@ -1,0 +1,5 @@
+# Keep GitHub's language bar about the code: raw data and generated outputs are excluded from language statistics.
+data/** linguist-vendored
+tests/fixtures/** linguist-vendored
+tests/golden/** linguist-generated
+reports/** linguist-generated

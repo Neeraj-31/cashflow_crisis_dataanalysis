@@ -37,11 +37,12 @@ from src.detectors.monitor import load_inflation
 from src.masking import archetype
 from src.ratios import check_identities, compute_ratios
 
+from src import evaluation as ev  # noqa: E402
+
 KEEP_COLS = ["cik", "role", "matched_to", "event_q", "status", "first_amber_uncorrected", "first_amber_corrected",
              "first_red_uncorrected", "first_red_corrected", "altman_alarm_q", "rule_alarm_q", "h_cash_0.10", "h_multi_0.10"]
-METHODS = {"amber (uncorrected)": "first_amber_uncorrected", "amber (n-corrected)": "first_amber_corrected",
-           "red (uncorrected)": "first_red_uncorrected", "red (n-corrected)": "first_red_corrected",
-           "Altman Z''-EM distress": "altman_alarm_q", "any Layer 2 rule": "rule_alarm_q"}
+METHODS = {k: ev.METHODS[k] for k in ["amber (uncorrected)", "amber (n-corrected)", "red (uncorrected)", "red (n-corrected)",
+                                       "Altman Z''-EM distress", "any Layer 2 rule"]}   # same registry, robustness order
 
 
 # ------------------------------------------------------------------ EDGAR variants
@@ -114,30 +115,13 @@ def _scores(keep, cfg, row):
     return sc
 
 
-def _auc(a, b):
-    a, b = np.asarray(a, float), np.asarray(b, float)
-    a, b = a[np.isfinite(a)], b[np.isfinite(b)]
-    if not len(a) or not len(b):
-        return np.nan
-    return float(((a[:, None] > b[None, :]).sum() + 0.5 * (a[:, None] == b[None, :]).sum()) / (len(a) * len(b)))
-
-
-def _rate(x, rg, B=2000):
-    x = np.asarray(x, float)
-    if len(x) == 0:
-        return np.nan, np.nan, np.nan
-    bs = x[rg.integers(0, len(x), (B, len(x)))].mean(axis=1)
-    return float(x.mean()), float(np.quantile(bs, .025)), float(np.quantile(bs, .975))
-
-
-def _pairs(R):
-    ok = R[R.status == "ok"]
-    f = ok[ok.role == "failed"]
-    return f, ok[(ok.role == "control") & ok.matched_to.isin(f.cik)]
+_auc = ev.auc
+_pairs = ev.analysed
 
 
 def _summ(f, c, col, rg, cfg, **lab):
-    d, dlo, dhi = _rate(f[col].notna(), rg); a, alo, ahi = _rate(c[col].notna(), rg)
+    B = ev.ci_resamples(cfg)
+    d, dlo, dhi = ev.rate_ci(f[col].notna(), rg, B); a, alo, ahi = ev.rate_ci(c[col].notna(), rg, B)
     lead = (f.event_q - f[col]).dropna()
     row = dict(**lab, failed_firms=len(f), controls=len(c), detection=d, det_ci_lo=dlo, det_ci_hi=dhi,
                false_alarm=a, fa_ci_lo=alo, fa_ci_hi=ahi, median_lead_quarters=float(lead.median()) if len(lead) else np.nan)
@@ -298,19 +282,22 @@ def cases(cfg, paths):
 
 def level_vs_change(cfg, paths):
     """Is the failed-control gap a difference in LEVEL (already there in the training years) or in CHANGE
-    (deterioration during the monitored window)? Self-referential detectors only see change."""
-    L = pd.read_csv(paths.tables / "edgar_layer1_panel.csv")
+    (deterioration during the monitored window)? Self-referential detectors only see change.
+    Reported for the analysed sample (the firms behind every EDGAR rate) and, as before, for every firm with ratios."""
+    from src.run_edgar import analysed_panel
+    La, L = analysed_panel(paths)
     M = cfg["edgar"]["monitor_quarters"]
     ratios = ["ocf_to_current_liabilities", "ebitda_interest_cover", "altman_z2_em"]
-    train = L[L.tau < -M + 1].groupby(["role", "cik"])[ratios].median()
-    mon = L[L.tau.between(-3, 0)].groupby(["role", "cik"])[ratios].median()
-    chg = (mon - train)
     rows = []
-    for c in ratios:
-        for role in ("failed", "control"):
-            t, d = train.loc[role, c].dropna(), chg.loc[role, c].dropna()
-            rows.append(dict(ratio=c, role=role, firms=len(t), training_level_median=float(t.median()),
-                             change_to_last_4q_median=float(d.median()), share_falling=float((d < 0).mean())))
+    for sample, D in [("analysed", La), ("all firms with ratios", L)]:
+        train = D[D.tau < -M + 1].groupby(["role", "cik"])[ratios].median()
+        mon = D[D.tau.between(-3, 0)].groupby(["role", "cik"])[ratios].median()
+        chg = (mon - train)
+        for c in ratios:
+            for role in ("failed", "control"):
+                t, d = train.loc[role, c].dropna(), chg.loc[role, c].dropna()
+                rows.append(dict(sample=sample, ratio=c, role=role, firms=len(t), training_level_median=float(t.median()),
+                                 change_to_last_4q_median=float(d.median()), share_falling=float((d < 0).mean())))
     t = pd.DataFrame(rows); t.to_csv(paths.tables / "robust_edgar_level_vs_change.csv", index=False)
     print(t.round(3).to_string(index=False))
 
@@ -342,13 +329,14 @@ def figures(cfg, paths):
                                            ("z2_em_2018", "Altman Z''-EM", C["purple"])]):
             ax[1].bar(x + (i - 1) * .27, hd[col], .27, color=c, label=lab)
         sf = cfg["archetype"]["masked"]["structural_flags"]
-        ax[1].axhline(sf["liquidity_cover_max"], color=C["navy"], ls=":", lw=1, label=f"liquidity cover flag < {sf['liquidity_cover_max']:g}")
-        ax[1].axhline(sf["interest_cover_max"], color=C["orange"], ls=":", lw=1, label=f"interest cover flag < {sf['interest_cover_max']:g}")
-        ax[1].axhline(cfg["altman_z2_em"]["distress"], color=C["purple"], ls=":", lw=1, label=f"Z''-EM distress < {cfg['altman_z2_em']['distress']:g}")
+        ax[1].axhline(sf["liquidity_cover_max"], color=C["navy"], ls=":", lw=1, label=f"archetype structural flag: liquidity cover < {sf['liquidity_cover_max']:g}")
+        ax[1].axhline(sf["interest_cover_max"], color=C["orange"], ls=":", lw=1, label=f"archetype structural flag: EBITDA / interest < {sf['interest_cover_max']:g} "
+                      f"(Layer 2 rule: < {cfg['layer2']['rules']['ebitda_interest_cover_min']:g})")
+        ax[1].axhline(cfg["altman_z2_em"]["distress"], color=C["purple"], ls=":", lw=1, label=f"archetype structural flag: Z''-EM < {cfg['altman_z2_em']['distress']:g}")
         ax[1].axhline(0, color=C["ink"], lw=.8)
         ax[1].set_xticks(x, [f"{m:g}x\n{a}" for m, a in zip(hd.hidden_debt_multiple, hd.archetype)])
         ax[1].set_xlabel("hidden debt added (multiple of reported debt) / resulting archetype")
-        ax[1].set_title("B. NMC 2018 ratios with hidden debt added"); ax[1].legend(fontsize=8)
+        ax[1].set_title("B. NMC 2018 ratios with hidden debt added (post-hoc stress test)"); ax[1].legend(fontsize=8)
         fig.tight_layout(); fig.savefig(paths.figures / "robust_edgar_tradeoff_nmc_hidden_debt.png"); plt.close(fig)
     print("saved robustness figure")
 

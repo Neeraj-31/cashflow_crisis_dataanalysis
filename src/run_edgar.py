@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
+from src import evaluation as ev  # noqa: E402
 from src.config import Paths, load_config, rng  # noqa: E402
 from src.detectors import layer2_rules  # noqa: E402
 from src.detectors.monitor import load_inflation, monitor_firm, usable_training_periods  # noqa: E402
@@ -28,24 +29,37 @@ from src.reporting.style import C, EVENT, STYLE  # noqa: E402
 L1_RATIOS = ["ocf_to_current_liabilities", "liquid_to_st_debt", "ebitda_interest_cover", "altman_z2_em", "neg_dso", "neg_sloan_accruals"]
 
 
-def firm_run(cik, role, event_q, matched_to, cfg, paths, inflation, shift=0, keep=None):
-    """shift: move the training/monitoring boundary by `shift` quarters (robustness; 0 = pre-registered).
-    keep: optional dict that receives the monitor output ('out'), the rule flags ('F') and the monitored index."""
+def prepare(cik, event_q, cfg, paths, flows="ttm"):
+    """Layers 0 for one EDGAR firm: (status or None, canonical quarters q, oriented ratios r).
+    flows: 'ttm' (pre-registered) or 'quarter' (single-quarter flows; post-hoc TTM-overlap check only)."""
     f = paths.raw / "edgar" / "facts" / f"CIK{int(cik):010d}.csv.gz"
-    base = {"cik": int(cik), "role": role, "event_q": int(event_q), "matched_to": matched_to}
     if not f.exists():
-        return {**base, "status": "no facts file"}, None
-    q = edgar.quarterly_canonical(pd.read_csv(f))
+        return "no facts file", None, None
+    q = edgar.quarterly_canonical(pd.read_csv(f), flows=flows)
     gap = cfg["edgar"]["max_gap_to_event_quarters"]
     q = q.loc[:event_q] if not q.empty else q
     if q.empty or q.index.max() < event_q - gap:
-        return {**base, "status": f"last filing more than {gap} quarters before event"}, None
+        return f"last filing more than {gap} quarters before event", None, None
     q = q.reindex(range(q.index.min(), event_q + 1))          # quarters after the last filing stay NaN
     try:
         check_identities(q, cfg["identities"], f"CIK{cik}")
     except IdentityError as e:
-        return {**base, "status": f"identity failure: {str(e).splitlines()[0][:150]}"}, None
-    r = compute_ratios(q, cfg)
+        return f"identity failure: {str(e).splitlines()[0][:150]}", None, None
+    return None, q, compute_ratios(q, cfg)
+
+
+def firm_run(cik, role, event_q, matched_to, cfg, paths, inflation, shift=0, keep=None, winsor=None):
+    """shift: move the training/monitoring boundary by `shift` quarters (robustness; 0 = pre-registered).
+    keep: optional dict that receives the monitor output ('out'), the rule flags ('F') and the monitored index.
+    winsor: optional {ratio: (lo, hi)} caps applied to the oriented ratios (post-hoc robustness only; None = off)."""
+    base = {"cik": int(cik), "role": role, "event_q": int(event_q), "matched_to": matched_to}
+    status, q, r = prepare(cik, event_q, cfg, paths)
+    if status is not None:
+        return {**base, "status": status}, None
+    if winsor:
+        r = r.copy()
+        for c, (lo, hi) in winsor.items():
+            r[c] = r[c].clip(lo, hi)
     M = cfg["edgar"]["monitor_quarters"]; cash = cfg["masking"]["cash_ratio"]
     start = event_q - M + 1 + shift                          # first monitored quarter
     n_train = int((r.index < start).sum())
@@ -91,37 +105,27 @@ def tables(cfg, paths):
     summarise(R, cfg, paths)
 
 
-def _rate(x, rg, B=2000):
-    x = np.asarray(x, float); m = len(x)
-    if m == 0:
-        return np.nan, np.nan, np.nan
-    bs = x[rg.integers(0, m, (B, m))].mean(axis=1)
-    return float(x.mean()), float(np.quantile(bs, .025)), float(np.quantile(bs, .975))
-
-
 def summarise(R, cfg, paths):
+    """Writes edgar_detection_summary.csv: the ONE source of every EDGAR detection / false-alarm CI
+    (explainer, report and sanity checks all read it; src/evaluation.py has the bootstrap)."""
     rg = np.random.default_rng(np.random.SeedSequence([cfg["seed"], 4242]))
     rg_d = np.random.default_rng(np.random.SeedSequence([cfg["seed"], 4243]))
-    ok = R[R.status == "ok"].copy()
-    # keep only pairs where both members ran, so detection and false-alarm rates use the same windows
-    pairs = ok[ok.role == "failed"].cik
-    ctrl_ok = ok[(ok.role == "control") & ok.matched_to.isin(pairs)]
-    fail_ok = ok[(ok.role == "failed")]
+    B = ev.ci_resamples(cfg)
+    # controls count only where their failed firm also ran, so detection and false-alarm rates use the same windows
+    fail_ok, ctrl_ok = ev.analysed(R)
     funnel = pd.DataFrame([{"step": "failed firms in panel", "count": int((R.role == "failed").sum())},
                            {"step": "controls matched", "count": int((R.role == "control").sum())},
                            *[{"step": f"{role}: {s}", "count": int(n)} for (role, s), n in
                              R.assign(s=R.status.str.split(":").str[0]).groupby(["role", "s"]).size().items()]])
     funnel.to_csv(paths.tables / "edgar_funnel.csv", index=False)
-    methods = {"amber (uncorrected)": "first_amber_uncorrected", "red (uncorrected)": "first_red_uncorrected",
-               "amber (n-corrected)": "first_amber_corrected", "red (n-corrected)": "first_red_corrected",
-               "Altman Z''-EM distress": "altman_alarm_q", "any Layer 2 rule": "rule_alarm_q"}
+    methods = dict(ev.METHODS)
     if fail_ok.get("inflation_0.10", pd.Series(dtype=float)).isna().all():   # simulation not run: no n-correction
         methods = {k: v for k, v in methods.items() if "corrected)" not in k or "uncorrected" in k}
     rows = []
     for lab, col in methods.items():
         det = fail_ok[col].notna(); fa = ctrl_ok[col].notna()
         lead = (fail_ok.event_q - fail_ok[col]).dropna()
-        d, dlo, dhi = _rate(det, rg); f, flo, fhi = _rate(fa, rg)
+        d, dlo, dhi = ev.rate_ci(det, rg, B); f, flo, fhi = ev.rate_ci(fa, rg, B)
         row = {"method": lab, "failed_firms": len(fail_ok), "controls": len(ctrl_ok), "detection": d, "det_ci_lo": dlo,
                "det_ci_hi": dhi, "false_alarm": f, "fa_ci_lo": flo, "fa_ci_hi": fhi,
                "median_lead_quarters": float(lead.median()) if len(lead) else np.nan,
@@ -129,9 +133,8 @@ def summarise(R, cfg, paths):
         for cm in cfg["cost"]["c_miss"]:
             row[f"expected_cost_cm{cm}"] = cfg["cost"]["c_fa"] * f + cm * (1 - d)
         # discrimination: detection minus false alarms (independent bootstrap of the two groups, separate stream)
-        a_, b_ = det.to_numpy(float), fa.to_numpy(float)
-        diff = [a_[rg_d.integers(0, len(a_), len(a_))].mean() - b_[rg_d.integers(0, len(b_), len(b_))].mean() for _ in range(2000)]
-        row.update(det_minus_fa=d - f, diff_ci_lo=float(np.quantile(diff, .025)), diff_ci_hi=float(np.quantile(diff, .975)))
+        _, lo, hi = ev.diff_ci(det.to_numpy(float), fa.to_numpy(float), rg_d, B)
+        row.update(det_minus_fa=d - f, diff_ci_lo=lo, diff_ci_hi=hi)
         rows.append(row)
     S = pd.DataFrame(rows)
     alt = S.set_index("method").loc["Altman Z''-EM distress"]
@@ -155,7 +158,7 @@ def summarise(R, cfg, paths):
             ranks = pd.Series(np.r_[b, a]).rank().to_numpy()
             return (a.mean() - b.mean()) / sp, (ranks[len(b):].sum() - len(a) * (len(a) + 1) / 2) / (len(a) * len(b))
         d, auc = eff(m, v)
-        bs = np.array([eff(m[rg.integers(0, len(m), len(m))], v[rg.integers(0, len(v), len(v))]) for _ in range(2000)])
+        bs = np.array([eff(m[rg.integers(0, len(m), len(m))], v[rg.integers(0, len(v), len(v))]) for _ in range(B)])
         pd.DataFrame([{"comparison": "peak MI, Masked minus Visible", "masked_n": len(m), "visible_n": len(v), "cohens_d": d,
                        "d_ci_lo": np.nanquantile(bs[:, 0], .025), "d_ci_hi": np.nanquantile(bs[:, 0], .975), "auc": auc,
                        "auc_ci_lo": np.nanquantile(bs[:, 1], .025), "auc_ci_hi": np.nanquantile(bs[:, 1], .975)}]
@@ -163,8 +166,17 @@ def summarise(R, cfg, paths):
     print(funnel.to_string(index=False)); print(S.round(3).to_string(index=False)); print(arch.to_string(index=False))
 
 
-def figures(cfg, paths):
+def analysed_panel(paths):
+    """Layer 1 panel restricted to the analysed sample (the firms behind every EDGAR rate): edgar_layer1_panel.csv
+    holds every firm that reached the ratio stage, including firms later dropped for too little training data."""
     L = pd.read_csv(paths.tables / "edgar_layer1_panel.csv")
+    f, c = ev.analysed(pd.read_csv(paths.tables / "edgar_firm_results.csv"))
+    keep = set(zip(f.cik, f.role)) | set(zip(c.cik, c.role))
+    return L[[k in keep for k in zip(L.cik, L.role)]], L
+
+
+def figures(cfg, paths):
+    L, _ = analysed_panel(paths)
     labels = {"ocf_to_current_liabilities": "OCF (TTM) / current liabilities", "liquid_to_st_debt": "(cash + ST investments) / ST debt",
               "ebitda_interest_cover": "EBITDA / interest (TTM)", "altman_z2_em": "Altman Z''-EM", "neg_dso": "debtor days (negated)",
               "neg_sloan_accruals": "Sloan accruals (negated)"}
@@ -175,10 +187,11 @@ def figures(cfg, paths):
                 g = L[L.role == role].groupby("tau")[c]
                 q1, med, q3, n = g.quantile(.25), g.median(), g.quantile(.75), g.count()
                 ax.fill_between(med.index, q1, q3, color=col, alpha=.18, lw=0)
-                ax.plot(med.index, med, "-", color=col, lw=2, label=f"{role} median (IQR band), n<={int(n.max())}")
+                ax.plot(med.index, med, "-", color=col, lw=2, label=f"{role} median (IQR band), {L[L.role == role].cik.nunique()} "
+                        f"analysed firms (<= {int(n.max())} with a value per quarter)")
             ax.axvline(0, **EVENT); ax.set_title(labels[c], fontsize=10); ax.set_xlabel("quarters relative to event (0 = Item 1.03 8-K)")
         axes[0].legend(fontsize=8)
-        fig.suptitle("Layer 1 on the EDGAR panel: failed firms vs matched controls in event time (lower = worse)", fontsize=12.5, weight="bold", x=.01, ha="left")
+        fig.suptitle("Layer 1 on the EDGAR panel (analysed firms only): failed firms vs matched controls in event time (lower = worse)", fontsize=12.5, weight="bold", x=.01, ha="left")
         fig.tight_layout(); fig.savefig(paths.figures / "edgar_layer1_event_time.png"); plt.close(fig)
         S = pd.read_csv(paths.tables / "edgar_detection_summary.csv")
         fig, ax = plt.subplots(figsize=(8, 5.5))

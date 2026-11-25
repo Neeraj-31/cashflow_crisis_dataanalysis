@@ -41,6 +41,9 @@ REFERENCES = [
     "Beneish, M. D. (1999). The detection of earnings manipulation. *Financial Analysts Journal*, 55(5), 24–36.",
     "Casey, C., & Bartczak, N. (1985). Using operating cash flow data to predict financial distress: Some extensions. *Journal of Accounting Research*, 23(1), 384–401.",
     "Crosier, R. B. (1988). Multivariate generalizations of cumulative sum quality-control schemes. *Technometrics*, 30(3), 291–303.",
+    "Hawkins, D. M. (1987). Self-starting CUSUM charts for location and scale. *The Statistician*. [verify before citing]",
+    "Jones, L. A., Champ, C. W., & Rigdon, S. E. (2004). The run length distribution of the CUSUM with estimated parameters. *Journal of Quality Technology*. [verify before citing]",
+    "Quesenberry, C. P. (1991). SPC Q charts for start-up processes and short or long runs. *Journal of Quality Technology*. [verify before citing]",
     "Durbin, J., & Koopman, S. J. (2012). *Time Series Analysis by State Space Methods* (2nd ed.). Oxford University Press.",
     "Jensen, W. A., Jones-Farmer, L. A., Champ, C. W., & Woodall, W. H. (2006). Effects of parameter estimation on control chart properties: A literature review. *Journal of Quality Technology*, 38(4), 349–364.",
     "Künsch, H. R. (1989). The jackknife and the bootstrap for general stationary observations. *Annals of Statistics*, 17(3), 1217–1241.",
@@ -80,10 +83,10 @@ def cohort_section() -> list[str]:
     s.append(f"\nNo cohort firm is Masked by the pre-set rule: {len(vis)} are Visible and {len(oth)} Other. One reason is "
              "structural: Screener reports no cash/short-term-debt split, so liquidity cover is never evaluable and a firm can "
              "trip at most two of the three structural flags, while also needing positive OCF in every pre-event year. "
-             f"The rule-level order still follows the archetypes: in {int(vis.flag_order.isin(['cash first', 'same year']).sum())} of "
-             f"{len(vis)} Visible firms the cash flag came first or in the same year, and in "
-             f"{int(oth.flag_order.isin(['structural first', 'structural only']).sum())} of {len(oth)} Other firms a structural flag "
-             "came first or alone. With this few firms that is an illustration, not a test. Over the fiscal years where both members "
+             f"The order of flags is uninformative for Visible firms: the label is defined by OCF < 0 in at least "
+             f"{cfg['archetype']['visible']['ocf_negative_consecutive_years']} consecutive pre-event years, so an early cash flag is "
+             f"definitional. Among the {len(oth)} Other firms, a structural flag came first or alone in "
+             f"{int(oth.flag_order.isin(['structural first', 'structural only']).sum())}. With this few firms that is an illustration, not a test. Over the fiscal years where both members "
              f"of a pair have data, the pre-set rules flagged {int(cw.failed_flagged)} of {int(cw.failed_firms)} failed firms and "
              f"{int(cw.controls_flagged)} of {int(cw.controls)} controls (`cohort_pairs_common_window.csv`). The controls' history "
              f"is short (Screener's public pages show twelve years), so the common window is only "
@@ -100,7 +103,8 @@ def robustness_section() -> list[str]:
         s.append(f"{missing('robustness tables: run python -m src.robustness')}\n"); return s
     V = T("robust_edgar_variants"); hg = T("robust_edgar_h_grid"); ru = T("robust_edgar_rules"); au = T("robust_edgar_auc")
     rp = T("robust_edgar_reproduce").iloc[0]; jf = T("robust_jyoti_fill"); ae = T("robust_case_alt_events")
-    hd = T("robust_nmc_hidden_debt"); lc = T("robust_edgar_level_vs_change").set_index(["ratio", "role"])
+    hd = T("robust_nmc_hidden_debt"); lc = T("robust_edgar_level_vs_change")
+    lc = lc[lc["sample"] == "analysed"].set_index(["ratio", "role"])
     rb = cfg["robustness"]
     s.append("All analyses in this section were added after the main results were seen (logged as a deviation); they test "
              "whether conclusions survive reasonable changes and use no verdict. Script: `src/robustness.py`.\n")
@@ -176,10 +180,16 @@ def robustness_section() -> list[str]:
         f"{'stays at or above' if e.loc['jyoti'].lead_years_any_rule.min() >= 2 else 'falls below'} the two years H1 asks for when "
         "the event is dated a year earlier (H1 itself concerns the statistical detector, which could not run).\n")
     h = hd.set_index("hidden_debt_multiple"); rv = rb["nmc_revealed_debt_usd_bn"]
-    s.append(f"**9.5 NMC as reported versus a hidden-debt restatement.** NMC never published restated accounts. After the "
-             f"collapse the company put total debt at about US${rv['revealed_total']}bn against about US${rv['reported']}bn in its last "
-             "accounts, so the stress test adds undisclosed short-term debt as a multiple of reported debt (same interest rate, equity "
-             "reduced one-for-one):\n")
+    s.append(f"**9.5 NMC as reported versus a hidden-debt restatement (post-hoc sensitivity illustration, not evidence).** NMC never "
+             f"published restated accounts. After the collapse the company put total debt at about US${rv['revealed_total']}bn against "
+             f"about US${rv['reported']}bn in its last accounts. The stress test adds, in every year, hidden debt D = multiple × reported "
+             "total debt as short-term debt: short-term debt, total debt, current liabilities and total liabilities rise by D; book "
+             "equity and retained earnings fall by D; total assets, cash and deposits are unchanged (the money is assumed spent); "
+             "interest rises at the reported interest ÷ total debt rate; EBITDA, EBIT, revenue and OCF are unchanged. So liquidity "
+             "cover and EBITDA / interest fall, and Z''-EM falls through X1, X2 and X4 (X3 unchanged). The same multiple applies in "
+             "every year (a simplification); identities are re-checked for each multiple. Structural flags here are the archetype flags "
+             f"(EBITDA / interest < {cfg['archetype']['masked']['structural_flags']['interest_cover_max']:g}, not the Layer 2 rule's "
+             f"{cfg['layer2']['rules']['ebitda_interest_cover_min']:g}):\n")
     s.append("| Hidden debt (× reported) | Archetype | Structural flags tripped | Liquidity cover 2018 | Interest cover 2018 | Z''-EM 2018 |\n|---|---|---|---|---|---|")
     for m_, row in h.iterrows():
         s.append(f"| {m_:g} | {row.archetype} | {int(row.n_structural_flags)} | {row.liquidity_cover_2018:.2f} | "
@@ -196,8 +206,103 @@ def robustness_section() -> list[str]:
                  "`reports/tables/sanity_checks.csv`. They confirm, among other things, that the pre-registered settings are "
                  "unchanged since the fingerprint, that no alarm uses data after the event, that every tested table regenerates "
                  "identically, and that thresholds learned from the right distribution hit their nominal rate (so the CUSUM code "
-                 "itself is sound). The warnings are the findings above.\n")
+                 "itself is sound). The warnings are the findings above. These checks test traceability, consistency and plumbing, not "
+                 "scientific validity: a check can pass while a conclusion is wrong.\n")
+    s.extend(posthoc_section())
     return s
+
+
+def posthoc_section() -> list[str]:
+    """9.7: summary of the post-hoc review checks (src/post_hoc.py, src/simulate/self_starting.py); details in the explainer."""
+    ph = cfg["post_hoc"]; M = cfg["edgar"]["monitor_quarters"]; cm = cfg["cost"]["c_miss"]
+    pr = T("posthoc_paired_rules"); pa = pr[pr.other == "Altman Z''-EM distress"].set_index("metric")
+    sw = T("posthoc_static_weakness").set_index(["method", "role"]); fl = T("posthoc_filing_lead").set_index("method")
+    pe = T("posthoc_persistence"); tt = T("posthoc_ttm_overlap"); w = T("posthoc_winsor").set_index("method")
+    mi = T("posthoc_mi_healthy"); ss_ = T("posthoc_sim_self_starting"); ch = T("posthoc_calibration_horizon").set_index("item").value
+    n28 = cfg["simulation"]["h5_training_length"]; r28 = ss_[(ss_.n == n28) & (ss_.nominal == 0.10)].set_index("method")
+    ar_ = [x for x in r28.index if "AR(1)" in x][0]; simH = mi[mi["sample"].str.startswith("simulation") & (mi.group == "H")].iloc[0]
+    rl, rc = sw.loc[("any Layer 2 rule", "failed")], sw.loc[("any Layer 2 rule", "control")]
+    tiers = [m for m in pr.other.unique() if m != "Altman Z''-EM distress"]
+    beat = [m for m in tiers if pr[(pr.other == m) & pr.metric.str.startswith("expected_cost")].verdict.str.startswith("rules better").all()]
+    p1 = pe[(pe.method == "any Layer 2 rule") & (pe.consecutive_quarters == 1)].iloc[0]
+    pk = pe[(pe.method == "any Layer 2 rule") & (pe.consecutive_quarters == pe.consecutive_quarters.max())].iloc[0]
+    s = [f"**9.7 Additional checks (post-hoc / exploratory).** Added on {ph['date']} after all results were seen, in response to a "
+         "review; settings in the new config blocks `evaluation` and `post_hoc` (deviations log); no verdict uses them. Tables "
+         "`reports/tables/posthoc_*.csv`; full write-up in the explainer, Section 8.\n",
+         f"- *Paired comparison (post-hoc).* Resampling matched units (failed firm + its control) with the same resample for both "
+         f"methods, the rules have a lower expected cost than {len(beat)} of {len(tiers)} statistical tiers at every cost ratio (CIs "
+         f"exclude zero), but rules minus Altman Z''-EM is not distinguishable from zero: detection {100 * pa.loc['detection', 'difference']:+.1f} "
+         f"points ({100 * pa.loc['detection', 'ci_lo']:+.1f} to {100 * pa.loc['detection', 'ci_hi']:+.1f}), expected cost at C_M = {cm[0]} "
+         f"{pa.loc[f'expected_cost_cm{cm[0]}', 'difference']:+.2f} ({pa.loc[f'expected_cost_cm{cm[0]}', 'ci_lo']:+.2f} to "
+         f"{pa.loc[f'expected_cost_cm{cm[0]}', 'ci_hi']:+.2f}).",
+         f"- *Fixed horizons and static weakness (post-hoc).* {100 * rl.of_those_already_on_before_window:.0f}% of the failed firms whose first "
+         f"rule alarm had a lead of {M - 3}–{M - 1} quarters were already flagged in the last training quarter; before monitoring starts the "
+         f"rules flag {100 * rl.flagged_before_window_all_firms:.0f}% of failed firms and {100 * rc.flagged_before_window_all_firms:.0f}% of controls. "
+         "Long leads largely measure static weakness, not early warning.",
+         f"- *Persistence (post-hoc).* Requiring {int(pk.consecutive_quarters)} consecutive quarters moves the rules from "
+         f"{pct(p1.detection)} / {pct(p1.false_alarm)} to {pct(pk.detection)} / {pct(pk.false_alarm)} (detection / false alarms).",
+         f"- *Filing dates (post-hoc).* Dated by SEC filing date, the median rule lead is {fl.loc['any Layer 2 rule', 'median_lead_quarters_filing_date']:.1f} "
+         f"quarters (vs {fl.loc['any Layer 2 rule', 'median_lead_quarters_period_end']:g} from period ends); median reporting lag "
+         f"{fl.median_reporting_lag_days.min():g}–{fl.median_reporting_lag_days.max():g} days.",
+         f"- *Calibration horizon (post-hoc).* h is calibrated for {cfg['detectors']['monitor_horizon']} steps and EDGAR monitors {M} "
+         f"quarters: no mismatch; missing quarters only reduce effective steps (median {ch['EDGAR cash-ratio steps actually monitored: median']:g}), "
+         "which lowers rather than raises false alarms.",
+         f"- *TTM overlap (post-hoc).* The cash detector on non-overlapping inputs: " + "; ".join(
+             f"{r.input}: AUC {r.auc:.2f} ({r.auc_ci_lo:.2f}–{r.auc_ci_hi:.2f}), false alarms {pct(r.false_alarm)}" for r in tt.itertuples())
+         + ". Overlap does not explain the weak discrimination.",
+         f"- *Winsorising at {100 * ph['winsor_quantiles'][0]:.0f}% / {100 * ph['winsor_quantiles'][1]:.0f}% (post-hoc).* Amber false alarms "
+         f"{pct(w.loc['amber (uncorrected)', 'base_false_alarm'])} → {pct(w.loc['amber (uncorrected)', 'false_alarm'])}; rules and Altman unchanged.",
+         "- *Controls are survivors (post-hoc note).* No control filed for bankruptcy through 2023, which makes separation easier than "
+         "a lender's real problem; industry counts in `posthoc_industry.csv`.",
+         f"- *Masking index relative to healthy firms (post-hoc).* Healthy simulated firms have median peak MI {simH.median_peak_mi:.2f} and "
+         f"{pct(simH.share_mi_above_0)} are above zero, so MI > 0 alone does not mean 'masked'; healthy-centred values are in "
+         "`posthoc_mi_healthy.csv`. The structural side contains cash balances (liquidity cover, working capital), so MI compares "
+         "overlapping information.",
+         f"- *Self-starting benchmark (post-hoc, simulation).* An AR(1) recursive-residual self-starting CUSUM gives "
+         f"{pct(r28.loc[ar_, 'empirical_fa'])} false alarms and {pct(r28.loc[ar_, 'detection_S1'])} S1 detection at n = {n28}, nominal 10%; "
+         "it is correctly specified for the AR(1) simulator by construction, so this may not transfer to real data.\n"]
+    return s
+
+
+def eda_section() -> list[str]:
+    """§4.1: design-choice EDA (src/eda.py; retrospective, training quarters only). Every number from eda_*.csv."""
+    E = cfg["eda"]; need = cfg["detectors"]["min_periods_layer3"]; n28 = cfg["simulation"]["h5_training_length"]
+    cash = cfg["masking"]["cash_ratio"]; eps = cfg["ratios"]["denominator_eps_rel_assets"]
+    hl, rp, se, dn, cv, et = (T(f"eda_{k}") for k in ["history_length", "ratio_properties", "seasonality", "denominators", "covariance", "event_time"])
+    a = rp[rp.role == "all analysed"].set_index("ratio"); s4 = se[se.lag_quarters == 4].set_index("input")
+    d = dn.set_index(["item", "role"]); c = cv.set_index("dimension_p").loc["all"]
+    o = [f"**4.1 Design-choice EDA (retrospective).** Added {E['date']}, after all results (`src/eda.py`, config `eda`): the data "
+         "properties each design choice depends on, measured on EDGAR training quarters only. It changes no setting or verdict; it shows "
+         "whether the data are consistent with the choices.\n"]
+    o.append("| Sample | Unit | Firms | Median usable training periods (10th–90th pct) | Share ≥ " f"{need} | Share ≥ {n28} |\n|---|---|---|---|---|---|")
+    for _, r in hl.iterrows():
+        o.append(f"| {r['sample']} | {r.unit} | {int(r.firms)} | {r['median']:g} ({r.p10:g}–{r.p90:g}) | {pct(r.share_at_least_min_periods, 0)} | {pct(r.share_at_least_h5_n, 0)} |")
+    o.append("")
+    o.append("| Ratio | Coverage of training quarters | Lag-1 ACF of level | Median excess kurtosis of change | Firms with excess kurtosis > 3 |\n|---|---|---|---|---|")
+    for k, r in a.iterrows():
+        o.append(f"| `{k}` | {pct(r.share_quarters_observed, 0)} | {r.median_acf1_level:.2f} | {r.median_excess_kurtosis_change:.2f} | {pct(r.share_firms_kurtosis_above_normal_x3, 0)} |")
+    o.append("")
+    o.append("| Quarters before event | Failed: median cash ratio | Controls: median cash ratio | Gap |\n|---|---|---|---|")
+    for r in et.itertuples():
+        o.append(f"| {int(r.tau_quarters)} | {r.failed_median:.2f} | {r.control_median:.2f} | {r.gap_control_minus_failed:.2f} |")
+    o.append("")
+    anf = hl[hl["sample"] == "EDGAR: analysed failed firms"].iloc[0]; f0, f4 = et.iloc[0], et[et.tau_quarters == -4].iloc[0]
+    o.append("Deductions:\n")
+    o += [f"- **Short histories are the norm.** Analysed failed firms have a median of {anf['median']:g} training quarters and only "
+          f"{pct(anf.share_at_least_h5_n, 0)} reach n = {n28}; the annual sources never reach {need}. Threshold calibration must be judged at short n (H4/H5).",
+          f"- **Cash ratio.** `{cash}` has the best coverage ({pct(a.loc[cash, 'share_quarters_observed'], 0)}) and lighter tails than OCF / debt "
+          f"(kurtosis {a.loc[cash, 'median_excess_kurtosis_change']:.2f} vs {a.loc['ocf_to_total_debt', 'median_excess_kurtosis_change']:.2f}); "
+          f"liquidity cover is almost never available ({pct(a.loc['liquid_to_st_debt', 'share_quarters_observed'], 0)}). The analysed sample was selected on cash-ratio coverage, so its coverage is flattered.",
+          f"- **Persistence → state-space model.** Every ratio is persistent (lag-1 ACF {a.median_acf1_level.min():.2f}–{a.median_acf1_level.max():.2f}), so a moving level with AR(1) noise, not iid draws, is the right baseline.",
+          f"- **Seasonality → TTM flows.** Single-quarter cash flow gives a lag-4 ACF of the change of {s4.loc[s4.index[1], 'median_acf_of_change']:+.2f}; TTM gives {s4.loc[s4.index[0], 'median_acf_of_change']:+.2f}.",
+          f"- **Two ε values.** ε = {eps['activity']:g} would blank interest cover in {pct(d.loc[('interest', 'control'), 'share_below_activity_eps'], 0)} of control quarters; "
+          f"ε = {eps['default']:g} blanks {pct(d.loc[('interest', 'control'), 'share_below_default_eps'], 0)}.",
+          f"- **Ledoit–Wolf shrinks fully.** About {c.median_n_over_p:g} observations per dimension; median shrinkage {c.median_shrinkage:.2f}, i.e. a scaled "
+          "identity for most firms: the multivariate detector effectively ignores correlations (a limitation found by this EDA).",
+          f"- **Gradual decline → CUSUM over 16 quarters.** Failed firms already sit {f0.gap_control_minus_failed:.2f} below controls {int(-f0.tau_quarters)} quarters out "
+          f"and the gap widens to {f4.gap_control_minus_failed:.2f} four quarters out: a slow slide (suits a cumulative detector) on top of static weakness (explains Section 9's level-vs-change finding).",
+          ""]
+    return o
 
 
 def build() -> str:
@@ -230,6 +335,11 @@ def build() -> str:
     jy_ocf = jf.loc["OCF < 0"]; jy_any = jf.loc["Any rule"]
     nw_neg = int(rj.index[rj.equity_to_assets < 0][0])
     lc = rn.liquid_to_st_debt
+    pr_ = T("posthoc_paired_rules"); pa_ = pr_[pr_.other == "Altman Z''-EM distress"]
+    alt_indist = pa_[pa_.metric.str.startswith("expected_cost")].verdict.str.startswith("not").all()
+    tiers_ = [x for x in pr_.other.unique() if x != "Altman Z''-EM distress"]
+    rules_beat_stats = all(pr_[(pr_.other == x) & pr_.metric.str.startswith("expected_cost")].verdict.str.startswith("rules better").all() for x in tiers_)
+    l2r, arc = cfg["layer2"]["rules"], cfg["archetype"]["masked"]["structural_flags"]; az = cfg["altman_z2_em"]
 
     s = []
     s.append("# Judging a firm against its own history\n\n*A layered early-warning framework, a measurement and correction of "
@@ -252,9 +362,11 @@ def build() -> str:
         f"detection. A multivariate detector loses to the univariate one when the drift sits in the cash ratio but wins clearly when "
         f"cash is healthy or concealed. In the two case studies cash flow warned early at Jyoti Structures (operating cash flow "
         f"negative from FY{ftp(jy_ocf)}) and stayed silent at NMC Health, where only liquidity cover of short-term debt fell below 1. "
-        f"On an exploratory panel of {ok_f} US bankruptcies with {ok_c} matched controls from SEC EDGAR, simple pre-set rules beat both "
-        f"the statistical detectors and Altman Z'' on expected cost, and the amber statistical tier did not reliably separate failed "
-        f"from healthy firms (detection {pct(am_u.detection)} vs false alarms {pct(am_u.false_alarm)}); a post-hoc diagnosis points to "
+        f"On an exploratory panel of {ok_f} US bankruptcies with {ok_c} matched controls from SEC EDGAR, simple pre-set rules had a lower "
+        f"expected cost than the statistical detectors{' (paired CIs exclude zero)' if rules_beat_stats else ''}"
+        f"{', but could not be distinguished from Altman Z' + chr(39) * 2 + '-EM (paired CIs include zero, post-hoc)' if alt_indist else ''}, and "
+        f"the amber statistical tier showed no detectable advantage over chance (detection {pct(am_u.detection)} vs false alarms "
+        f"{pct(am_u.false_alarm)}; the CI of the difference includes zero); a post-hoc diagnosis points to "
         "the model absorbing slow declines and to failed firms being weak for years rather than suddenly worse. "
         "Pre-registered hypotheses H2–H5 are supported; H1 and H6 cannot be tested on the data collected so far.\n")
 
@@ -290,7 +402,9 @@ def build() -> str:
         "earnings quality by Sloan (1996) and Beneish (1999). The monitoring tools are Page's CUSUM (1954), Crosier's multivariate "
         "CUSUM (1988), Ledoit–Wolf shrinkage (2004), block bootstraps (Künsch 1989; Politis & Romano 1994), state-space methods "
         "(Durbin & Koopman 2012), conformal prediction (Vovk, Gammerman & Shafer 2005; Angelopoulos & Bates 2023), and the effect of "
-        "estimated parameters on control charts (Jensen et al. 2006). Full references are at the end. No systematic literature "
+        "estimated parameters on control charts (Jensen et al. 2006; Jones, Champ & Rigdon 2004), with self-starting charts as a remedy "
+        "(Hawkins 1987; Quesenberry 1991) [verify before citing]. H4 therefore confirms and quantifies a known effect in a short-history "
+        "financial early-warning setting; it is not a new discovery. Full references are at the end. No systematic literature "
         "search was done; the framework is a distinctive combination for a "
         "course project, not a claim of novelty.\n")
 
@@ -314,7 +428,7 @@ def build() -> str:
         "- Screener lacks a current/non-current split, so Jyoti's working capital and current liabilities are proxies that overstate "
         "Altman's X1.\n"
         "- A public panel of about 9,000 US firms was rejected earlier because basic identities failed in most rows (blueprint §4.3).\n\n"
-        f"**EDGAR panel (exploratory).** The deep cases cannot support Layers 3–5, and the India/GCC cohort has not been collected yet, "
+        f"**EDGAR panel (exploratory).** The deep cases cannot support Layers 3–5, and the India cohort (§8) has only annual data, "
         f"so the method was also run on US firms. Event = first 8-K citing Item 1.03 (bankruptcy) in 2015–2023, financials excluded. "
         f"Of {nfail} failed firms in the panel and {nctrl} size- and industry-matched controls, {ok_f} failed firms and {ok_c} paired controls "
         "had enough quarterly XBRL history (≥ 12 usable training quarters before a 16-quarter monitored window). Year-to-date figures were "
@@ -335,12 +449,17 @@ def build() -> str:
         "only warning in the data is the liquidity cover in Figure 3.*\n\n"
         "![Layer 1, NMC](figures/layer1_event_time_nmc.png)\n\n*Figure 3. NMC in event time (lower = worse). Cash ratios improve "
         "into the event; liquidity cover and interest cover deteriorate.*\n")
+    s.extend(eda_section())
 
     # ------------------------------------------------------------------ 5
     s.append("## 5. Method\n")
     s.append(
         "All ratios are oriented so that lower is worse. **Layer 0** builds and audits ratios. **Layer 1** aligns firms in event time. "
-        "**Layer 2** applies pre-set rules (OCF < 0; EBITDA/interest < 1.2; debtor days > 270; Altman Z''-EM < 4.35). "
+        f"**Layer 2** applies pre-set rules (OCF < {l2r['ocf_max']}; Layer 2 rule EBITDA/interest < {l2r['ebitda_interest_cover_min']:g}; debtor days > "
+        f"{l2r['debtor_days_max']}; Altman Z''-EM < {az['distress']:g}). The archetype rule (§7) uses its own structural flags, including "
+        f"EBITDA/interest < {arc['interest_cover_max']:g}; both thresholds are pre-registered. The Z''-EM cut-off {az['distress']:g} is the classic Z'' "
+        f"distress boundary {cfg['nmc']['altman_z2']['distress']:g} plus the EM constant {az['constant']}, a widely quoted convention; other "
+        "sources quote other cut-offs [verify before citing: Altman 2005]. "
         "**Layer 3** fits a local level + AR(1) model on the training window, filters the whole series with frozen parameters and "
         "monitors standardised one-step errors z_t with a one-sided CUSUM:\n\n"
         "  S_t = max(0, S_{t−1} − z_t − k),  k = 0.5,  alarm when S_t > h.\n\n"
@@ -394,8 +513,14 @@ def build() -> str:
         s.append(f"| {sc} | " + " | ".join(pct(m.loc[(sc, d), "detection"]) for d in ["arima", "kalman", "rw", "mcusum"]) + " |")
     s.append(
         f"\n**H3: {H.loc['H3', 'verdict']}** ({H.loc['H3', 'evidence']}). One caveat: S1 loss is not 'slight', and ARIMA beat the "
-        "Kalman detector in S1 and S4, as in the blueprint's earlier run, so the state-space model's advantage is robustness to "
-        "missing data and level shifts, not raw power under these dynamics.\n\n"
+        f"Kalman detector in {', '.join(x for x in ['S1', 'S2', 'S3', 'S4'] if m.loc[(x, 'arima'), 'detection'] > m.loc[(x, 'kalman'), 'detection'])}, so the state-space model's advantage is robustness to "
+        "missing data and level shifts, not raw power under these dynamics. "
+        f"*Interpretation (author's reading; the code-computed verdict above stands):* partially supported. Multivariate minus Kalman "
+        f"is {100 * (m.loc[('S1', 'mcusum'), 'detection'] - m.loc[('S1', 'kalman'), 'detection']):+.1f} points in S1 and "
+        f"{100 * (m.loc[('S3', 'mcusum'), 'detection'] - m.loc[('S3', 'kalman'), 'detection']):+.1f} in S3; the S2 win is true by "
+        "construction (cash unchanged, so cash-only detectors fire at about their false-alarm rate); and S4 conceals only partly "
+        f"(cash-only detection {pct(min(m.loc[('S4', d), 'detection'] for d in ['arima', 'kalman', 'rw']))}–"
+        f"{pct(max(m.loc[('S4', d), 'detection'] for d in ['arima', 'kalman', 'rw']))}).\n\n"
         "![Power](figures/sim_power_curves.png)\n\n*Figure 6. Univariate detectors dominate when drift is in the cash ratio; only the "
         "multivariate detector sees S2. Detection rises with training length.*\n")
 
@@ -410,7 +535,8 @@ def build() -> str:
         f"detector alone in {pct(fp.loc['S2', 'structural_only'], 0)} of S2 firms, while under concealment the cash detector still "
         f"usually fired, just late (cash first {pct(fp.loc['S4', 'cash_first'], 0)}, structural first {pct(fp.loc['S4', 'structural_first'], 0)}). "
         f"Healthy firms show 'neither' in only {pct(fp.loc['H', 'neither'], 0)}, a direct consequence of the uncorrected thresholds used "
-        "for MI; MI should be recomputed with corrected thresholds before use.\n\n"
+        "for MI; MI should be recomputed with corrected thresholds before use. MI > 0 alone does not mean 'masked' (healthy firms' median "
+        f"peak MI is {msum.loc['H', 'median_peak_mi']:.2f}); a healthy-centred version is in §9.7.\n\n"
         "![MI](figures/sim_masking_index.png)\n\n*Figure 7. MI is highest when structure deteriorates under a quiet cash ratio (S2).*\n\n"
         f"**Pre-registered archetypes.** By rule, Jyoti is **{arch.loc['jyoti', 'archetype']}** "
         f"({int(arch.loc['jyoti', 'max_consecutive_negative_ocf_years'])} consecutive years of negative OCF) and NMC is "
@@ -422,7 +548,9 @@ def build() -> str:
     s.append("## 8. Case, cohort and EDGAR results\n")
     s.append(f"- **H1 (Jyoti): {H.loc['H1', 'verdict']}.** {H.loc['H1', 'evidence']}.")
     s.append(f"- **H2 (NMC): {H.loc['H2', 'verdict']}.** {H.loc['H2', 'evidence']}. This rests on one ratio crossing a threshold of 1, "
-             "so it is an illustration, not proof.")
+             "so it is an illustration, not proof. H2's criterion needs the cash flag silent and *any one* structural flag to trip; "
+             f"the archetype rule needs *at least {cfg['archetype']['masked']['min_structural_flags']}*, which is why H2 is SUPPORTED while NMC is "
+             "'Other'.")
     s.append(f"- **H6 (cohort): {H.loc['H6', 'verdict']}.** {H.loc['H6', 'evidence']}.\n")
     s.extend(cohort_section())
     s.append(
@@ -440,7 +568,9 @@ def build() -> str:
         f"\nThe real-firm false-alarm rate of the uncorrected amber tier ({pct(am_u.false_alarm)}) mirrors the simulation: the "
         f"calibration problem is not an artefact of simulated data. The n-correction lowers it to {pct(am_c.false_alarm)} and the red "
         f"tier to {pct(rd_c.false_alarm)}, but detection falls with it. On expected cost (C_FA = 1, C_M ∈ {{{', '.join(map(str, cm))}}}) "
-        f"only {', '.join(beats) if beats else 'no method'} beats Altman Z''-EM at every cost ratio. Altman itself flags "
+        f"only {', '.join(beats) if beats else 'no method'} has a lower point estimate than Altman Z''-EM at every cost ratio; a paired "
+        f"bootstrap (post-hoc, §9.7) {'cannot distinguish the rules from Altman' if alt_indist else 'separates the rules from Altman'}. "
+        "Altman itself flags "
         f"{pct(alt.false_alarm)} of healthy US controls, because the emerging-market cut-offs are strict for leveraged US firms. "
         "On this panel the statistical detectors are not better than simple pre-set rules. Worse, for "
         f"{', '.join(nochance)} the interval for 'detection minus false alarm' includes zero: on real US firms these tiers do not "
@@ -456,7 +586,8 @@ def build() -> str:
         f"{pct(efp.loc['Masked', ['structural_first', 'structural_only']].sum(), 0)} of Masked firms versus "
         f"{pct(efp.loc['Visible', ['structural_first', 'structural_only']].sum(), 0)} of Visible firms. The direction matches H6 but the "
         "interval includes no effect, so this is suggestive only, and it is US data, not the pre-registered cohort.\n\n"
-        "![EDGAR event time](figures/edgar_layer1_event_time.png)\n\n*Figure 8. Failed US firms start below their controls on cash flow, "
+        "![EDGAR event time](figures/edgar_layer1_event_time.png)\n\n*Figure 8. Analysed firms only "
+        f"({ok_f} failed, {ok_c} controls). Failed US firms start below their controls on cash flow, "
         "interest cover and Z''-EM and deteriorate over the last two to three years. Two ratios do not move in their oriented direction: "
         "failed firms have fewer debtor days than controls, and their negated Sloan accruals rise before failure because write-downs "
         "push net income below cash flow.*\n\n"
@@ -476,7 +607,11 @@ def build() -> str:
         "- **Possible falsification at NMC**: if reported figures were unreliable, detection is limited by construction.\n"
         "- **Event definition**: lead times are measured from fiscal or quarter ends, not from publication dates, so usable warning is shorter.\n"
         "- **Simulation realism**: Gaussian AR(1) dynamics; heavy tails (S5) and training-period breaks (S6) were cut.\n"
-        "- **Direction**: Crosier's MCUSUM is direction-agnostic and can alarm on improvement.\n")
+        "- **Direction**: Crosier's MCUSUM is direction-agnostic and can alarm on improvement.\n"
+        "- **Premise tension**: failed US firms were weak all along, so 'worse than its own past' cannot see them; the contribution is the "
+        "calibration methodology plus the layered framework, not predictive superiority.\n"
+        "- **Survivor controls**: controls never filed for bankruptcy through 2023, which makes separation easier than a lender's real problem.\n"
+        "- **Masking index**: compares overlapping information and is positive for most healthy firms; only a healthy-centred version is interpretable.\n")
     s.append("## 11. Conclusion and practical use\n")
     s.append(
         "Self-referential monitoring can be calibrated, but not with the naive bootstrap: with one to ten years of data its alarms are "

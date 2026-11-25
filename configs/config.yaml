@@ -262,3 +262,47 @@ edgar:
     no_item_103_2012_2023: true
   max_gap_to_event_quarters: 4          # added 2026-11-21 after a pipeline-coverage failure (see decision log #23)
   prefilter_assets_quarters: [24, 28]    # >= 24 of the 28 quarters before the event must report Assets (XBRL frames)
+
+# ---------------------------------------------------------------- ADDENDUM 2026-11-22: post-hoc review checks
+# Added AFTER all results were seen, in response to a review of reports/explainer.html. Exploratory only: no
+# hypothesis verdict uses any value below. Logged in docs/PREREGISTRATION.md s.10 and docs/decision_log.md #34-#45.
+# No pre-registered block above was changed.
+evaluation:
+  ci_resamples: 2000                     # resamples for every EDGAR detection / false-alarm CI (src/evaluation.py);
+                                         # equals the literal previously in src/run_edgar.py, so no main number changes
+post_hoc:
+  date: "2026-11-22"
+  seed_offsets: {paired: 7101, horizon: 7102, persistence: 7103, filing: 7104, self_starting: 7105, ttm: 7106, winsor: 7107}
+  fixed_horizons_quarters: [4, 8, 12, 16]  # alarm raised at or before event quarter - h; h >= monitor length = state
+                                           # in the last training quarter (rules / Altman only)
+  persistence_quarters: [2, 3]           # flag must be on in >= p consecutive monitored quarters
+  winsor_quantiles: [0.01, 0.99]         # pooled over all panel firms' TRAINING quarters, per ratio
+  acf_lags: [1, 2, 3, 4]                 # autocorrelation of standardised Kalman errors on healthy controls
+  seasonal_lag_quarters: 4               # year-on-year difference of the single-quarter cash ratio
+  mi_healthy_percentiles: [0.90, 0.95]   # healthy-centred masking-index thresholds (simulation, healthy firms)
+  self_starting:
+    null_paths: 200000                   # Monte Carlo draws of the iid N(0,1) CUSUM maximum for h
+  sic_divisions:                         # standard SIC divisions by 2-digit major group (EDGAR industry table only)
+    - {from: 1, to: 9, name: "Agriculture, forestry, fishing"}
+    - {from: 10, to: 14, name: "Mining (incl. oil and gas)"}
+    - {from: 15, to: 17, name: "Construction"}
+    - {from: 20, to: 39, name: "Manufacturing"}
+    - {from: 40, to: 49, name: "Transportation, communications, utilities"}
+    - {from: 50, to: 51, name: "Wholesale trade"}
+    - {from: 52, to: 59, name: "Retail trade"}
+    - {from: 60, to: 67, name: "Finance (excluded)"}
+    - {from: 70, to: 89, name: "Services"}
+    - {from: 91, to: 99, name: "Public administration"}
+
+# ---------------------------------------------------------------- ADDENDUM 2026-11-25: design-choice EDA
+# Added AFTER all results were seen, to document the data properties behind each design choice (src/eda.py ->
+# reports/tables/eda_*.csv). Descriptive only: no detector, threshold or verdict reads this block. EDGAR statistics
+# use TRAINING quarters only (before the monitored window). Logged in docs/PREREGISTRATION.md s.10 and decision log #48.
+eda:
+  date: "2026-11-25"
+  ratios: [ocf_to_current_liabilities, ocf_to_revenue, ocf_to_total_debt, liquid_to_st_debt, ebitda_interest_cover,
+           altman_z2_em, neg_dso]
+  acf_lags: [1, 2, 3, 4]
+  min_values: 8                          # a per-firm statistic (ACF, kurtosis, outlier share) needs >= 8 values
+  outlier_robust_z: 4                    # |diff - median| / (1.4826 * MAD) above this = outlier quarter-on-quarter change
+  event_time_taus: [-20, -16, -12, -8, -4, 0]   # quarters before the event at which failed vs control medians are shown
